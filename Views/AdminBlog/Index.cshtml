@@ -1,0 +1,97 @@
+﻿@model GameStudioSite.Models.AdminBlogIndexViewModel
+@{
+    ViewData["Title"] = "Manage Updates";
+}
+
+<div class="admin-page-header">
+    <h1>Updates</h1>
+    <a class="btn" asp-action="Create">+ Add Update</a>
+</div>
+
+@if (TempData["AdminMessage"] != null)
+{
+    <div class="admin-flash-message">@TempData["AdminMessage"]</div>
+}
+
+<div class="admin-categories-box">
+    <h3>Categories</h3>
+    <div class="category-chip-list">
+        @foreach (var category in Model.Categories)
+        {
+            <span class="category-chip @(category.IsPublic ? "" : "category-chip-private")">
+                @category.Name
+                @if (!category.IsPublic)
+                {
+                    <span class="chip-private-label">(hidden)</span>
+                }
+                <form asp-action="DeleteCategory" asp-route-id="@category.Id" method="post"
+                      class="admin-inline-form" onsubmit="return confirm('Delete this category?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="category-chip-delete" title="Delete">&times;</button>
+                </form>
+            </span>
+        }
+    </div>
+
+    <form asp-action="CreateCategory" method="post" class="category-add-form">
+        @Html.AntiForgeryToken()
+        <input type="text" name="name" placeholder="New category name" class="form-control" required />
+        <label class="checkbox-label-inline">
+            <input type="checkbox" name="isPublic" value="true" checked />
+            Public
+        </label>
+        <button type="submit" class="btn btn-small">Add</button>
+    </form>
+</div>
+<div class="admin-sort-bar">
+    @if (Model.OldestFirst)
+    {
+        <a class="btn btn-small" asp-action="Index">Showing: Oldest first &middot; Switch to newest first</a>
+    }
+    else
+    {
+        <a class="btn btn-small" asp-action="Index" asp-route-sort="oldest">Showing: Newest first &middot; Switch to oldest first</a>
+    }
+</div>
+<table class="admin-table">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Published</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var post in Model.Posts)
+        {
+            <tr>
+                <td><img src="@post.FeaturedImageUrl" alt="@post.ImageAltText" class="admin-thumb" /></td>
+                <td>@post.Title</td>
+                <td>@post.Category</td>
+                <td>@post.PublishedDate.ToString("MMM d, yyyy")</td>
+                <td>
+                    @if (Model.PrivateCategoryNames.Contains(post.Category))
+                    {
+                        <span class="status-badge status-private">Hidden</span>
+                    }
+                    else
+                    {
+                        <span class="status-badge status-public">Public</span>
+                    }
+                </td>
+                <td class="admin-row-actions">
+                    <a asp-action="Edit" asp-route-id="@post.Id">Edit</a>
+                    <form asp-action="Delete" asp-route-id="@post.Id" asp-route-sort="@(Model.OldestFirst ? "oldest" : null)"
+                          method="post" class="admin-inline-form"
+                          onsubmit="return confirm('Delete this update?');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="admin-link-button">Delete</button>
+                    </form>
+                </td>
+                
+            </tr>
+        }
+    </tbody>
+</table>

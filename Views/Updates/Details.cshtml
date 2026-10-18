@@ -1,0 +1,115 @@
+﻿@model GameStudioSite.Models.BlogPost
+@{
+    ViewData["HeroImage"] = @Model.FeaturedImageUrl;
+    ViewData["Heroless"] = true;
+}
+<div class="dark-background">
+    <div class="vertical-content">
+    @if (Model.ShowImage)
+    {
+            <div class="center-text">
+                <h1 class="post-title">@Model.Title</h1>
+            </div>
+        <div class="post-hero" style="background-image: url('@Model.FeaturedImageUrl');">
+            <div class="post-hero-overlay">
+                <span class="category-badge">@Model.Category</span>
+                <div class="post-meta">
+                    <span>@Model.PublishedDate.ToString("MMMM d, yyyy")</span>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <header class="post-header-plain">
+            <h1 class="post-title">@Model.Title</h1>
+        </header>
+    }
+    @if (Model.Tags.Any())
+    {
+            <div class="post-tags" style=@(Model.ShowImage ? "align-self:flex-start;margin-left:1rem;" : "")>
+            @foreach (var tag in Model.Tags)
+            {
+                <span class="tag-badge">@tag</span>
+            }
+        </div>
+    }
+<article class="post-page">
+                <div class="post-content">
+                    @Html.Raw(GameStudioSite.Helpers.EmbedFacade.Apply(
+                    GameStudioSite.Helpers.EmbedFacade.TrimTrailingEmpty(Model.ContentHtml)))
+                </div>
+</article>
+    @if (!Model.ShowImage)
+    {
+        <div class="post-hero-overlay">
+        <span class="category-badge">@Model.Category</span>
+        <div class="post-meta">
+            <span>@Model.PublishedDate.ToString("MMMM d, yyyy")</span>
+        </div>
+                </div>
+    }
+
+            <partial name="_ShareButtons" model="Model.Title" />
+</div>
+</div>
+<div class="gradient-black-actual-black"></div>
+
+@section Scripts {
+    <script>
+        // Copy-link buttons (also used by Instagram, which has no share URL)
+        document.querySelectorAll('[data-copy-url]').forEach(function (btn) {
+            btn.addEventListener('click', async function () {
+                const url = btn.dataset.copyUrl;
+                try {
+                    await navigator.clipboard.writeText(url);
+                    if(btn.title == "Copy link" )
+                    {
+                        alert('Link Copied!');
+                    }
+                    else
+                    {
+                        alert('Link Copied! \nOpening ' + btn.title);
+                    }
+                    
+                } catch {
+                    prompt('Copy this link:', url);
+                }
+                if (btn.dataset.open) {
+                    window.open(btn.dataset.open, '_blank', 'noopener');
+                }
+            });
+        });
+
+        // "+" button opens the device's share sheet, only shown where the browser supports it
+        const nativeBtn = document.getElementById('native-share-btn');
+        if (navigator.share) {
+            nativeBtn.style.display = 'inline-block';
+            nativeBtn.addEventListener('click', function () {
+                navigator.share({ title: nativeBtn.dataset.title, url: nativeBtn.dataset.url });
+            });
+        }
+                document.querySelectorAll('.post-content iframe[data-facade]').forEach(function (frame) {
+            const src = frame.getAttribute('data-src');
+            const width = parseInt(frame.getAttribute('width')) || 640;
+            const height = parseInt(frame.getAttribute('height')) || 360;
+
+            const facade = document.createElement('button');
+            facade.type = 'button';
+            facade.className = 'embed-facade';
+            //facade.style.maxWidth = width + 'px';
+            facade.style.aspectRatio = width + ' / ' + height;
+            facade.innerHTML =
+                '<span class="embed-facade-play">&#9654;</span>' +
+                '<span class="embed-facade-label">Click to play</span>';
+
+            facade.addEventListener('click', function () {
+                frame.src = src;
+                frame.removeAttribute('data-src');
+                facade.replaceWith(frame);
+            });
+
+            frame.replaceWith(facade);
+        });
+    </script>
+}

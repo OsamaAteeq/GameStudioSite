@@ -1,0 +1,21 @@
+﻿services:
+  web:
+    build: .
+    image: jzb4-site:local
+    ports:
+      - "8080:8080"
+    env_file: .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__IdentityConnection: "Data Source=/data/identity.db"
+      DataProtection__KeysPath: /data/keys
+    volumes:
+      - appdata:/data
+      - uploads-games:/app/wwwroot/images/games
+      - uploads-blog:/app/wwwroot/images/blog
+    restart: unless-stopped
+
+volumes:
+  appdata:
+  uploads-games:
+  uploads-blog:  

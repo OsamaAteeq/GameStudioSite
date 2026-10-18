@@ -1,0 +1,135 @@
+﻿@model GameStudioSite.Models.ContactFormModel
+@inject IConfiguration Configuration
+@using GameStudioSite.Models
+@{
+    ViewData["Title"] = "Contact";
+    ViewData["HeroText"] = "Contact Us";
+    ViewData["HeroImage"] = "/images/header-contact.jpg";
+    bool submitted = ViewBag.Submitted ?? false;
+    string email = "contact@jzb4.com";
+    string number = "000-000-0000";
+}
+<div class="dark-background">
+    <div class="horizontal-content wide">
+        <div class="vertical-content" id="contact-form">
+            @if (submitted)
+            {
+                <div class="attach-top" style="align-items:center; justify-content:center; text-align:center">
+                <h2>Message Sent!</h2>
+                    <p>Thanks for reaching out.
+                        <br>
+                        We'll get back to you soon.
+                    </p>
+                    <a class="btn" style="margin-top:2rem" asp-controller="Home" asp-action="Index">Back to Home</a>
+                </div>
+            }
+            else
+            {
+
+                <h2>Send a Message</h2>
+                <form asp-action="Index" method="post" class="contact-form">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label asp-for="FirstName"></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="field-validation-error"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="LastName"></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="field-validation-error"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Email"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subject</label>
+                        <div class="nested-select" id="subject-dropdown">
+                            <button type="button" class="nested-select-trigger" id="subject-trigger">
+                                @(string.IsNullOrEmpty(Model.Subject) ? "-- Select a subject --" : Model.Subject)
+                            </button>
+                            <ul class="nested-select-options">
+                                <li class="has-submenu">
+                                    Services
+                                    <ul class="submenu">
+                                        @foreach (var service in ServiceSeedData.All)
+                                        {
+                                            <li data-value="Services: @service.Title">@service.Title</li>
+                                        }
+                                        <li data-value="Services: Others/Multiple">Others / Multiple</li>
+                                    </ul>
+                                </li>
+                                @foreach (var subject in ContactFormModel.SubjectOptions)
+                                {
+                                    <li data-value="@subject">@subject</li>
+                                }
+                                <li data-value="Other">Other</li>
+                            </ul>
+                        </div>
+                        <input type="hidden" asp-for="Subject" id="subject-hidden-input" />
+                        <span asp-validation-for="Subject" class="field-validation-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Message"></label>
+                        <textarea asp-for="Message" class="form-control" rows="6"></textarea>
+                        <span asp-validation-for="Message" class="field-validation-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <div class="turnstile-container">
+                            <div class="turnstile-decorator">
+                            <div class="cf-turnstile" data-sitekey="@Configuration["Turnstile:SiteKey"]" data-theme="light"> </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group center">
+                        <button type="submit" class="btn" id="contact-submit-btn">
+                            <span id="btn-text">Send Message</span>
+                            <span id="btn-spinner" class="spinner" style="display: none;"></span>
+                        </button>
+                    </div>
+                </form>
+            }
+        </div>
+        <div class="vertical-content" style="margin-bottom:auto">
+
+            <div class="attach-top">
+                <h2>Get in Touch</h2>
+                <div class="contact-info">
+                <div class="contact-block">
+                    <h3>Email</h3>
+                    <a href="mailto:@email">@email</a>
+                </div>
+                <div class="contact-block">
+                    <h3>Phone Number</h3>
+                    <a href="tel:@number">@number</a>
+                </div>
+                </div>
+
+            </div>
+            <iframe class="map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d44188.036352981486!2d11.976151673211247!3d57.740201611227526!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x27694447d6645c29%3A0x8d005455d9b0da4e!2sJZB4%20Studios!5e0!3m2!1sen!2sse!4v1790431455803!5m2!1sen!2sse" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+        
+    </div>
+
+</div>
+<div class="gradient-black-actual-black">
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $.validator.setDefaults({ ignore: [] });
+    </script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+}

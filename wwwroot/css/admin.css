@@ -1,0 +1,236 @@
+﻿.admin-body {
+    background: var( --color-midnight-blue);
+}
+
+.admin-header {
+    background: var(--color-black);
+    color: var(--color-white);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-logo {
+    font-family: var(--font-heading);
+    color: var(--color-white);
+    font-size: 1.2rem;
+}
+
+.admin-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+    .admin-nav a {
+        color: var(--color-lavender-light);
+        font-weight: 600;
+    }
+
+        .admin-nav a:hover {
+            color: var(--color-accent-cyan);
+        }
+
+.admin-main {
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 80%;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    color: var(--color-lavender-light);
+}
+
+.btn-small {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+}
+
+/* FORM */
+
+.admin-page-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.admin-flash-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    color: var(--color-black);
+}
+
+    .admin-table th, .admin-table td {
+        text-align: left;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--color-lavender);
+    }
+
+.admin-thumb {
+    width: 60px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.admin-thumb-large {
+    width: 200px;
+    height: auto;
+    border-radius: 6px;
+}
+
+.admin-row-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: center;
+}
+    .admin-row-actions a 
+    {
+        color: var(--color-black);
+    }
+
+.admin-inline-form {
+    display: inline;
+}
+
+.admin-link-button {
+    background: none;
+    border: none;
+    color: #c0392b;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+}
+
+.admin-form {
+    background: var(--color-black);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 100%;
+    color: var(--color-lavender-light);
+}
+
+.quill-container {
+    background: white;
+    min-height: 250px;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.ql-toolbar {
+    background: white;
+}
+
+.ql-editor {
+    color: var(--color-black);
+}
+
+    .ql-editor h1, .ql-editor h2, .ql-editor h3 {
+        color: var(--color-black);
+    }
+
+.quill-decorator {
+    opacity: 80%;
+    transition: opacity 0.2s ease;
+}
+
+.ql-toolbar:has(.ql-picker.ql-expanded) + .quill-container {
+    opacity: 80%;
+}
+
+textarea.form-control {
+    resize: vertical; /* allows vertical resize only, blocks horizontal */
+}
+
+.form-control:focus, .quill-decorator:focus-within {
+    opacity: 1;
+}
+
+.quill-container:has(+ .ql-picker:focus-within) {
+    opacity: 80%;
+}
+
+/* Chips */
+.admin-categories-box {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.category-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+}
+
+.category-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--color-lavender-light);
+    color: var(--color-navy-deep);
+    padding: 0.3rem 0.4rem 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.category-chip-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-navy-deep);
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 0.3rem;
+}
+
+    .category-chip-delete:hover {
+        color: #c0392b;
+    }
+
+.category-add-form {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 300px;
+}
+
+.category-chip-private {
+    background: #fff3cd;
+}
+
+.chip-private-label {
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+.checkbox-label-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.admin-sort-bar {
+    margin-bottom: 1rem;
+}

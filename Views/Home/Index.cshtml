@@ -1,0 +1,123 @@
+﻿@using GameStudioSite.Models
+@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "";
+    ViewData["HeroText"] = "Passion Powers Play";
+    ViewData["HeroImage"] = "/images/header-home.jpg";
+    ViewData["FixedHero"] = true;
+    <div class="dark-background">
+        <div class="vertical-content">
+            <h2>Latest Games</h2>
+            @if (Model.LatestGames.Count == 0)
+            {
+                    <h3>Sorry</h3>
+                    <h4>We have no games now</h4>
+            }
+            <div class="game-grid">
+                @foreach (var game in Model.LatestGames)
+                {
+                    <a class="game-card"
+                       asp-controller="Home"
+                       asp-action="Games"
+                       asp-fragment="@game.Slug"
+                       style="--card-image: url('@game.ImageUrl');">
+
+                        <div class="game-card-content">
+                            <h4>
+                                @game.Title
+                            </h4>
+                        </div>
+
+                    </a>
+                }
+            </div>
+            
+        </div>
+    </div>
+    <div class="gradient-black-blue">
+    </div>
+    <div class="light-background">
+        <div class="horizontal-content">
+            <div class="vertical-content">
+                <h2>About us</h2>
+                <p class="center-text"> Passionate game development organization bringing people, ideas, and projects together. We create our own games and help others turn their visions into reality. We value creativity, collaboration, and assembling the right team for every challenge. We aim to build a community where developers grow, ideas flourish, and passion drives every project.</p>
+                <a class="btn" asp-controller="Home" asp-action="About">Learn more</a>
+            </div>
+            <img src="\images\home-about.jpg" alt="JZB4 full logo" />
+
+        </div>
+    </div>
+    <div class="gradient-blue-black">
+    </div>
+    <div class="dark-background">
+        <h2>Services</h2>
+        <div class="service-grid">
+            @foreach (var service in Model.Services)
+            {
+                <a class="service-card"
+                   asp-controller="Home"
+                   asp-action="Services"
+                   asp-fragment="@service.Slug"
+                   style="--card-image: url('@service.PictureSecondary');">
+
+                    <div class="service-card-content">
+                        <h3>
+                            @foreach (var word in service.Title.Split(' '))
+                            {
+                                <span>@word</span>
+                            }
+                        </h3>
+                        <p>
+                            @service.ShortDescription
+                        </p>
+                    </div>
+
+                </a>
+            }
+        </div>
+    </div>
+    <div class="gradient-black-blue">
+    </div>
+    <div class="light-background">
+        <h2>Latest Updates</h2>
+        @if (Model.LatestBlogPosts.Count == 0)
+        {
+            <h3>Sorry</h3>
+            <h4>We have no updates now</h4>
+        }
+        <div class="update-grid">
+            @foreach (var update in Model.LatestBlogPosts)
+            {
+                <a class="update-card"
+                   asp-controller="Updates"
+                   asp-action="Details"
+                   asp-route-category="@update.Category"
+                   asp-route-slug="@update.Slug">
+                    <div class="update-card-image">
+                        <img src="@update.FeaturedImageUrl" alt="@update.ImageAltText"/>
+                    </div>
+                    <div class="update-card-content">
+                        <h4>
+                            @update.Title
+                        </h4>
+                        <p>
+                            @update.Excerpt
+                        </p>
+                    </div>
+
+                </a>
+            }
+        </div>
+    </div>
+    <div class="gradient-blue-trans">
+    </div>
+    <div class="transparent-background">
+        <div class="cta">
+            <h2>Talk to us</h2>
+            <p class="center-text"> Have any questions? We are always open to talk about your business, new projects, creative&nbsp;opportunities and how we can help you.</p>
+            <a class="btn" asp-controller="Contact" asp-action="Index">Get in Touch</a>
+        </div>
+    </div>
+    <div class="gradient-trans-actual-black">
+    </div>
+}

@@ -1,0 +1,36 @@
+﻿@model GameStudioSite.Models.AdminLoginModel
+@{
+    ViewData["Title"] = "Admin Login";
+    Layout = null; // standalone page, no public nav/footer on the login screen
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body style="background: var(--color-black); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <form asp-action="Login" method="post" class="contact-form" style="background: var(--color-navy-deep); padding: 2rem; border-radius: 8px;">
+        @Html.AntiForgeryToken()
+        <h2>Admin Login</h2>
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label><input asp-for="RememberMe" /> Remember me</label>
+        </div>
+        <div style="align-items:center; display:flex; width:100%;justify-content:center;">
+            <button type="submit" class="btn">Log In</button>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <header class="admin-header">
+        <a class="admin-logo" asp-controller="Admin" asp-action="Index">JZB4 Admin</a>
+        <nav class="admin-nav">
+            <a asp-controller="Admin" asp-action="Index">Dashboard</a>
+            <a asp-controller="AdminGames" asp-action="Index">Games</a>
+            <a asp-controller="AdminBlog" asp-action="Index">Updates</a>
+        </nav>
+        <form asp-controller="Admin" asp-action="Logout" method="post" class="admin-logout-form">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-small">Log Out</button>
+        </form>
+    </header>
+
+    <main class="admin-main">
+        @RenderBody()
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

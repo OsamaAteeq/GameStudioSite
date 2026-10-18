@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+        @(string.IsNullOrEmpty(ViewData["Title"]?.ToString())
+                ? "JZB4 Studios"
+                : $"JZB4 Studios - {ViewData["Title"]}")
+    </title>
+
+    <link rel="icon" type="image/svg" href="~/images/JZB4-Logo-512-Rounded.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Zen+Dots&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @RenderSection("Head", required: false)
+    @section Head {
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="@Model.Title" />
+        <meta property="og:description" content="@Model.Excerpt" />
+        <meta property="og:url" content="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}")" />
+        <meta property="og:image" content="@($"{Context.Request.Scheme}://{Context.Request.Host}{Model.FeaturedImageUrl}")" />
+        <meta name="twitter:card" content="summary_large_image" />
+    }
+</head>
+<body>
+    @{
+        var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+        var action = ViewContext.RouteData.Values["action"]?.ToString();
+        var gradient = "gradient-trans-black";
+
+        if (ViewData["Gradient"] != null && ViewData["Gradient"] as string != "")
+        {
+            gradient = ViewData["Gradient"] as string;
+        }
+        else
+        {
+            gradient = "gradient-trans-black";
+        }
+        var headerImage = (controller, action) switch
+            {
+                ("Home", "Index") => "~/images/header-home.jpg",
+                ("Home", "Games") => "~/images/header-games.jpg",
+                ("Home", "About") => "~/images/header-about.jpg",
+                ("Home", "Services") => "~/images/header-services.jpg",
+                ("Updates", "Index") => "~/images/header-blog.jpg",
+                ("Contact", "Index") => "~/images/header-contact.jpg",
+                _ => "~/images/header-home.jpg"
+            };
+
+            var headerClass = (controller, action) switch
+            {
+                ("Home", "Index") => "header-image-home",
+                _ => "header-image"
+            };
+        }
+
+    <div class="@(ViewData["Heroless"] as bool? == true ? "" : ViewData["FixedHero"] as bool? == true ? "hero" : "hero-small")">
+        <header class="site-header">
+            <a class="logo" asp-controller="Home" asp-action="Index">
+                <img src="~/images/JZB4-Logo-512-Rounded.png" alt="JZB4 rounded logo" />
+            </a>
+            <nav class="site-nav">
+                <a class="@((controller, action) == ("Home", "Games") ? "active" : "")" asp-controller="Home" asp-action="Games">Games</a>
+                <a class="@((controller, action) == ("Home", "Services") ? "active" : "")" asp-controller="Home" asp-action="Services">Services</a>
+                <a class="@((controller, action) == ("Home", "About") ? "active" : "")" asp-controller="Home" asp-action="About">About</a>
+                <a class="@((controller, action) == ("Updates", "Index") ? "active" : "")" asp-controller="Updates" asp-action="Index">Updates</a>
+                <a class="@((controller, action) == ("Contact", "Index") ? "active" : "")" asp-controller="Contact" asp-action="Index">Contact</a>
+            </nav>
+            <button class="menu-toggle" id="menuToggle">
+                ☰
+            </button>
+        </header>
+        
+
+        @{
+            if (controller == "Home" || action == "Index")
+            {
+                <div class="hero-background">
+                    <img src="@Url.Content(headerImage)" alt="Header Image" class="@(ViewData["FixedHero"] as bool? == true ? "hero-background-moving" : "hero-background-fixed")" />
+                </div>
+                
+            }
+
+            if (controller == "Home" && action == "Index")
+            {
+                <div class="hero-content">
+                    <img src="\images\cropped-JZB4-Logo-blue-text-512x512.png.png" alt="JZB4 full logo" />
+                    <h1 class="slogan">@ViewData["HeroText"]</h1>
+                </div>
+            }
+            else if (ViewData["Heroless"] as bool? == true)
+            {
+
+            }
+            else
+            {
+                <div class="hero-content">
+                    <h1>@ViewData["HeroText"]</h1>
+                </div>
+            }
+
+        }
+
+        @if (ViewData["Heroless"] as bool? == true)
+        {
+            <div class="@gradient" style="margin-top:-5vh;">
+            </div>
+        }
+        else
+        {
+        <div class="@gradient">
+        </div>
+        }
+    </div>
+    <main class="main-content">
+        @RenderBody()
+    </main>
+    <footer class="site-footer">
+
+         <a asp-controller="Home" asp-action="Index" class="logo">
+            <img src="\images\cropped-JZB4-Logo-blue-text-512x512.png.png" alt="JZB4 Studios">
+            </a>
+
+        <hr class="footer-divider">
+        <div class="footer-content">
+        <nav class="footer-navigation" aria-label="Footer Navigation">
+                <a asp-controller="Home" asp-action="Games">Games</a>
+                <a asp-controller="Home" asp-action="Services">Services</a>
+                <a asp-controller="Home" asp-action="About">About</a>
+                <a asp-controller="Updates" asp-action="Index">Updates</a>
+                <a asp-controller="Contact" asp-action="Index">Contact</a>
+        </nav>
+
+        <div class="footer-socials">
+            <a href="https://www.linkedin.com/company/jzb4-studios"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="LinkedIn">
+                <i class="fa-brands fa-linkedin-in"></i>
+            </a>
+
+                <a href="https://www.facebook.com/JZB4.Studios/"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="Facebook">
+                <i class="fa-brands fa-facebook-f"></i>
+            </a>
+
+            <a href="https://www.instagram.com/jzb4_studios/"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+
+            <a href="https://twitter.com/JZB4Studios"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="X">
+                <i class="fa-brands fa-x-twitter"></i>
+            </a>
+
+            <a href="https://jzb4-studios.itch.io/"
+               target="_blank"
+               rel="noopener noreferrer"
+               aria-label="Itch.io">
+                <i class="fa-brands fa-itch-io"></i>
+            </a>
+        </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="footer-bottom">
+            &copy; @DateTime.Now.Year JZB4 Studios. All rights reserved.
+        </div>
+
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        const menuToggle = document.getElementById("menuToggle");
+        const nav = document.querySelector(".site-header nav");
+
+        menuToggle.addEventListener("click", () => {
+            nav.classList.toggle("active");
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

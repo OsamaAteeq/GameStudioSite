@@ -1,0 +1,176 @@
+﻿@model GameStudioSite.Models.BlogIndexViewModel
+@{
+    ViewData["Title"] = "Updates";
+    ViewData["HeroText"] = "Updates";
+    ViewData["HeroImage"] = "/images/header-blog.jpg";
+    ViewData["Gradient"] = "gradient-trans-blue";
+}
+<div class="light-background" id="updates-content">
+<div class="filter-bar">
+    <a asp-action="Index" asp-fragment="updates-content" class="@(Model.SelectedCategory == null ? "active" : "")">All</a>
+    @foreach (var cat in Model.Categories)
+    {
+        <a asp-action="Index" asp-route-category="@cat" asp-fragment="updates-content"
+           class="@(Model.SelectedCategory == cat ? "active" : "")">@cat</a>
+    }
+</div>
+    @if (Model.Posts.Count == 0)
+    {
+        <div class="vertical-content">
+            <h1>Sorry</h1>
+            <h3>We have no updates now</h3>
+            <h3>Come back later!</h3>
+        </div>
+    }
+    <div class="update-list-grid">
+    @foreach (var update in Model.Posts)
+    {
+            <a class="update-list-card"
+               asp-controller="Updates"
+               asp-action="Details"
+               asp-route-category="@update.Category"
+               asp-route-slug="@update.Slug">
+                <div class="update-list-card-image">
+                    <img src="@update.FeaturedImageUrl" alt="@update.ImageAltText" />
+                </div>
+                <div class="update-list-card-content">
+                    <h4>
+                        @update.Title
+                    </h4>
+                    <div class="update-list-card-info">
+                        <p class="left">
+                        @foreach (var tag in update.Tags)
+                        {
+                            <span>@tag</span>
+                        }
+                        </p>
+                        <div class="right">
+                        @if (string.IsNullOrEmpty(Model.SelectedCategory))
+                        {
+                            <span class="post-category">@update.Category</span>
+                        }
+                            <span>@update.PublishedDate.ToString("M"), @update.PublishedDate.ToString("yyyy")</span>
+                        
+                        </div>
+
+                    </div>
+                    <p>
+                        @update.Excerpt
+                    </p>
+                </div>
+
+            </a>
+    }
+</div>
+
+@if (Model.TotalPages > 1)
+{
+    <div class="pagination">
+
+        @if (Model.CurrentPage > 1)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(Model.CurrentPage - 1)"
+               asp-route-category="@Model.SelectedCategory"
+               asp-fragment="updates-content"
+            class="side">
+                &lt;
+            </a>
+        }
+
+        <div class="pagination-pages">
+
+            @if (Model.CurrentPage > 3)
+            {
+                <a asp-action="Index"
+                   asp-route-page="1"
+                   asp-route-category="@Model.SelectedCategory"
+                   asp-fragment="updates-content">
+                    1
+                </a>
+
+                <span class="pagination-dots">...</span>
+            }
+
+            @{
+                int startPage = Math.Max(1, Model.CurrentPage - 2);
+                int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <a asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-category="@Model.SelectedCategory"
+                   asp-fragment="updates-content"
+                   class="@(i == Model.CurrentPage ? "active" : "")">
+                    @i
+                </a>
+            }
+
+            @if (Model.CurrentPage < Model.TotalPages - 2)
+            {
+                <span class="pagination-dots">...</span>
+
+                <a asp-action="Index"
+                   asp-route-page="@Model.TotalPages"
+                   asp-route-category="@Model.SelectedCategory"
+                   asp-fragment="updates-content">
+                    @Model.TotalPages
+                </a>
+            }
+
+        </div>
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a asp-action="Index"
+               asp-route-page="@(Model.CurrentPage + 1)"
+               asp-route-category="@Model.SelectedCategory"
+			    asp-fragment="updates-content"
+               class="side">
+                &gt;
+            </a>
+        }
+
+    </div>
+}
+</div>
+<div class="gradient-blue-actual-black"></div>
+<script>
+    function centerActivePage() {
+        const pagination = document.querySelector(".pagination-pages");
+        const activePage = pagination.querySelector(".active")
+
+        if (!pagination || !activePage) return;
+        if (pagination.scrollWidth <= pagination.clientWidth) return;
+
+    const paginationRect = pagination.getBoundingClientRect();
+    const activeRect = activePage.getBoundingClientRect();
+
+    const distanceFromParentLeft =
+        activeRect.left - paginationRect.left;
+
+    const target =
+    distanceFromParentLeft -
+    (paginationRect.width / 2) +
+    (activeRect.width / 2);
+
+            pagination.scrollTo({
+            left: pagination.scrollLeft + target,
+            behavior: 'instant'});
+        
+    }
+
+    let resizeTimeout;
+
+    window.addEventListener("resize", function () {
+        clearTimeout(resizeTimeout);
+
+        resizeTimeout = setTimeout(() => {
+            centerActivePage();
+        }, 50);
+    });
+
+    document.addEventListener("DOMContentLoaded", centerActivePage);
+</script>

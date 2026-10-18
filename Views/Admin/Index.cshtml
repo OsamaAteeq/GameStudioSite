@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+<div class="vertical-content">
+<h1>Admin Dashboard</h1>
+    <h2>Welcome</h2>
+    <p>you're logged in</p>
+
+    <ul>
+        <li><a asp-controller="AdminGames" asp-action="Index">Manage Games</a></li>
+        <li><a asp-controller="AdminBlog" asp-action="Index">Manage Updates</a></li>
+    </ul>
+<form asp-controller="Admin" asp-action="Logout" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn">Log Out</button>
+</form>
+
+
+</div>

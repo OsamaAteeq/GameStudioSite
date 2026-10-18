@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.git
+**/*.user
+**/identity.db
+**/identity.db-*
+**/secrets.json
+.env
+Dockerfile*
+docker-compose*.yml
+**/wwwroot/images/games/
+**/wwwroot/images/blog/

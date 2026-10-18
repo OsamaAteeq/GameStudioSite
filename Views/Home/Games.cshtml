@@ -1,0 +1,98 @@
+﻿@model List<GameStudioSite.Models.Game>
+@{
+    ViewData["Title"] = "Games";
+    ViewData["HeroText"] = "Our Games";
+    ViewData["HeroImage"] = "/images/header-games.jpg";
+    string contactFormID = "contact-form";
+}
+@{
+    string divClass = "dark-background";
+    string gradientClass = "gradient-black-blue";
+    @if (Model.Count == 0)
+    {
+        <div class="@divClass vertical-content">
+            <h1>Sorry</h1>
+            <h3>We have no games now</h3>
+            <h3>Come back later!</h3>
+        </div>
+    }
+    for (int i = 0; i < Model.Count; i++)
+    {
+        var game = Model[i];
+        if (i % 2 != 0)
+        {
+            divClass = "light-background";
+            gradientClass = "gradient-blue-black";
+        }
+        else
+        {
+            divClass = "dark-background";
+            gradientClass = "gradient-black-blue";
+        }
+        
+        <div class="@divClass" id="@game.Slug">
+            <div class="horizontal-content image-first-mobile">
+                @if (i % 2 == 0)
+                {
+                    <div class="vertical-content">
+                        <h3 class="center-text">@game.Title</h3>
+                        <p class="center-text"> @game.Description</p>
+                        <a class="btn" href="@game.ItchIoUrl" target="_blank" rel="noopener">Play Now</a>
+                    </div>
+                    <img src="@game.ImageUrl" alt="@game.Title" />
+                }
+                else
+                {
+
+                    <img src="@game.ImageUrl" alt="@game.Title" />
+                    <div class="vertical-content">
+                        <h3 class="center-text">@game.Title</h3>
+                        <p class="center-text"> @game.Description</p>
+                        <a class="btn" href="@game.ItchIoUrl" target="_blank" rel="noopener">Play Now</a>
+                    </div>
+                }
+            </div>
+        </div>
+        if (i != Model.Count - 1)
+        {
+            <div class="@gradientClass">
+            </div>   
+        }
+    }
+    if (divClass == "dark-background")
+    {
+        gradientClass = "gradient-black-trans";
+    }
+    else
+    {
+        gradientClass = "gradient-blue-trans";
+    }
+    <div class="image-background">
+        <img src="/images/CtaImage.png" alt="Call to Action Background" />
+        <div class="@gradientClass">
+        </div>
+        <div class="transparent-background">
+        <div class="cta">
+            <h2>Share Ideas</h2>
+            <p class="center-text"> Have an idea? Share it with us! We’re passionate about creating games that resonate with you. We welcome all kind of ideas and feedback.</p>
+            <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="Game Ideas">Get in Touch</a>
+        </div>
+        </div>
+        <div class="gradient-trans-actual-black">
+        </div>
+    </div>
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (!window.location.hash) return;
+
+        const element = document.querySelector(window.location.hash);
+
+        if (!element) return;
+
+        element.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    });
+</script>

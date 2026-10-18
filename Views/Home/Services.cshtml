@@ -1,0 +1,85 @@
+﻿@model List<GameStudioSite.Models.Service>
+@{
+    ViewData["Title"] = "Services";
+    ViewData["HeroText"] = "Services";
+    ViewData["HeroImage"] = "/images/header-services.jpg";
+
+    string contactFormID = "contact-form";
+}
+@{
+    int switchIndex = Model.Count/2;
+    <div class="gradient-black-blue" style="height:auto">
+        @for (int i = 0; i < switchIndex; i++)
+        {
+            var service = Model[i];
+            <div class="transparent-background" id="@service.Slug">
+                <div class="horizontal-content image-first-mobile">
+                    @if (i % 2 == 0)
+                    {
+                        <div class="vertical-content">
+                            <h3 class="center-text">@service.Title</h3>
+                            <p class="center-text"> @service.Description</p>
+                            <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
+                        </div>
+                        <img src="@service.PicturePrimary" alt="@service.Title" />
+                    }
+                    else
+                    {
+
+                        <img src="@service.PicturePrimary" alt="@service.Title" />
+                        <div class="vertical-content">
+                            <h3 class="center-text">@service.Title</h3>
+                            <p class="center-text"> @service.Description</p>
+                            <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    <div class="gradient-blue-black" style="height:auto">
+        @for (int i = switchIndex; i < Model.Count; i++)
+        {
+            var service = Model[i];
+            <div class="transparent-background" id="@service.Slug">
+                <div class="horizontal-content image-first-mobile">
+                    @if (i % 2 == 0)
+                    {
+                        <div class="vertical-content">
+                            <h3 class="center-text">@service.Title</h3>
+                            <p class="center-text"> @service.Description</p>
+                            <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
+                        </div>
+                        <img src="@service.PicturePrimary" alt="@service.Title" />
+                    }
+                    else
+                    {
+
+                        <img src="@service.PicturePrimary" alt="@service.Title" />
+                        <div class="vertical-content">
+                            <h3 class="center-text">@service.Title</h3>
+                            <p class="center-text"> @service.Description</p>
+                            <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    <div class="gradient-black-actual-black">
+    </div>
+}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        if (!window.location.hash) return;
+
+        const element = document.querySelector(window.location.hash);
+
+        if (!element) return;
+
+        element.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    });
+</script>
