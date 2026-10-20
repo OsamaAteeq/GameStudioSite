@@ -1,5 +1,5 @@
 # ---- build stage ----
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # Restore first, so this layer is cached until the .csproj changes
@@ -10,7 +10,7 @@ COPY . .
 RUN dotnet publish GameStudioSite.csproj -c Release -o /app/publish --no-restore /p:UseAppHost=false
 
 # ---- runtime stage ----
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
