@@ -41,7 +41,7 @@ jobs:
             ghcr.io/osamaateeq/gamestudiosite:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          
+
   deploy:
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -62,10 +62,13 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
 
       - name: Deploy on VM
+        env:
+          TUNNEL_SERVICE_TOKEN_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
         run: |
           ssh -i ~/.ssh/id_ed25519 \
             -o StrictHostKeyChecking=accept-new \
-            -o ProxyCommand="cloudflared access ssh --hostname ssh.jzb4.com --id ${{ secrets.CF_ACCESS_CLIENT_ID }} --secret ${{ secrets.CF_ACCESS_CLIENT_SECRET }}" \
+            -o ProxyCommand="cloudflared access ssh --hostname ssh.jzb4.com" \
             ${{ secrets.SSH_USER }}@ssh.jzb4.com \
             "cd ~/jzb4-production && docker compose pull -q && docker compose up -d && docker image prune -f"
   
