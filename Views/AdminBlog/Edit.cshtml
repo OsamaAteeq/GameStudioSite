@@ -339,9 +339,11 @@
 
         const hiddenInput = document.getElementById('content-html-input');
 
-        if (hiddenInput.value) {
+                if (hiddenInput.value) {
             quill.root.innerHTML = hiddenInput.value;
+            quill.update(Quill.sources.SILENT);   // let Quill process the change without recording it
         }
+        quill.history.clear();                     // undo starts empty
 
                 const form = document.getElementById('update-form');
 
