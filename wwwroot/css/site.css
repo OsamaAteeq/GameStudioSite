@@ -1246,6 +1246,29 @@ input, textarea {
     align-items: center;
 }
 
+.post-content table {
+    display: table; /* was: block */
+    border-collapse: collapse;
+    max-width: 100%;
+    margin: 1rem 0;
+}
+
+.table-scroll {
+    overflow-x: auto; /* phone scrolling now lives on a wrapper */
+}
+
+.post-content td,
+.post-content th {
+    border: 1px solid rgba(203, 203, 233, 0.4); /* lavender, from your tokens */
+    padding: 0.5rem 0.75rem;
+    vertical-align: top;
+}
+
+.post-content .ql-table-temporary,
+.post-content temporary {
+    display: none;
+}
+
 /* Social CSS */
 .share-section {
     margin: 1.5rem 2rem;

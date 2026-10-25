@@ -57,6 +57,13 @@
 
 @section Scripts {
     <script>
+
+                document.querySelectorAll('.post-content table').forEach(function (t) {
+            const wrap = document.createElement('div');
+            wrap.className = 'table-scroll';
+            t.parentNode.insertBefore(wrap, t);
+            wrap.appendChild(t);
+        });
         // Copy-link buttons (also used by Instagram, which has no share URL)
         document.querySelectorAll('[data-copy-url]').forEach(function (btn) {
             btn.addEventListener('click', async function () {

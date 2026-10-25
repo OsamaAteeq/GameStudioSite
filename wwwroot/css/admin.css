@@ -150,6 +150,9 @@
     opacity: 80%;
     transition: opacity 0.2s ease;
 }
+.ql-table-menus-container, .ql-table-properties-form {
+    color: var(--color-black);
+}
 
 .ql-toolbar:has(.ql-picker.ql-expanded) + .quill-container {
     opacity: 80%;
@@ -160,6 +163,10 @@ textarea.form-control {
 }
 
 .form-control:focus, .quill-decorator:focus-within {
+    opacity: 1;
+}
+
+.quill-decorator.quill-active {
     opacity: 1;
 }
 

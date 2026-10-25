@@ -83,35 +83,201 @@
         <input asp-for="Form.ImageAltText" class="form-control" />
     </div>
 
-    <button type="submit" class="btn">Save</button>
+    <button type="submit" class="btn" id="save-btn">Save</button>
 </form>
 
 @section Scripts {
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/quill-table-better@1.2.3/dist/quill-table-better.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill-table-better@1.2.3/dist/quill-table-better.js"></script>
     <script>
                 const icons = Quill.import('ui/icons');
         icons['embed'] = '<svg viewBox="0 0 18 18"><rect class="ql-stroke" height="10" width="12" x="3" y="4"></rect><circle class="ql-fill" cx="9" cy="9" r="2"></circle></svg>';
-
+        icons['textcolor'] = '<svg viewBox="0 0 18 18"><path class="ql-stroke" d="M5 13 L9 3 L13 13 M6.5 9.5 H11.5"/><rect class="ql-fill" x="3" y="15" width="12" height="2"/></svg>';
+        Quill.register({ 'modules/table-better': QuillTableBetter }, true);
             const quill = new Quill('#quill-editor', {
             theme: 'snow',
             modules: {
+                table: false,
+                'table-better': { toolbarTable: true },
                 toolbar: {
                     container: [
                         [{ header: [1, 2, 3, false] }],
-                        ['bold', 'italic', 'underline', 'link'],
+                        ['bold', 'italic', 'underline', 'link', 'textcolor'],
                         [{ list: 'ordered' }, { list: 'bullet' }],
                         [{ align: [] }],
                         ['image', 'embed'],
+                        ['table-better'],
                         ['clean']
                     ],
                     handlers: {
                         image: insertImageByUrl,
-                        embed: insertEmbedCode
+                        embed: insertEmbedCode,
+                        textcolor: pickTextColor
                     }
-                }
+                },
+        keyboard: { bindings: QuillTableBetter.keyboardBindings }
             }
         });
+
+                        (function () {
+            let pending = null;   // text ranges captured when the panel opens
+
+            function toHex(c) {   // turns "red", "#abc" or "rgb(...)" into "#rrggbb", or '' if invalid
+                const ctx = document.createElement('canvas').getContext('2d');
+                ctx.fillStyle = '#010203';
+                ctx.fillStyle = c;
+                const v = ctx.fillStyle;
+                if (v === '#010203' && c.toLowerCase() !== '#010203') return '';
+                return /^#[0-9a-f]{6}$/i.test(v) ? v : '';
+            }
+
+            function normalize(v) {
+                v = v.trim();
+                if (/^([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v)) v = '#' + v;
+                return toHex(v);
+            }
+
+            function cellOf(node) {
+                const el = node && node.nodeType === 3 ? node.parentElement : node;
+                return el ? el.closest('td, th') : null;
+            }
+
+            function collectRanges(isTable) {
+                let cells = Array.from(quill.root.querySelectorAll('.ql-cell-selected'));
+                if (!cells.length) {
+                    const sel = quill.getSelection();
+                    if (sel) {
+                        const [leaf] = quill.getLeaf(sel.index);
+                        const c = leaf && cellOf(leaf.domNode);
+                        if (c) cells = [c];
+                    }
+                }
+                if (isTable && cells.length) {
+                    cells = Array.from(cells[0].closest('table').querySelectorAll('td, th'));
+                }
+                return cells.map(td => {
+                    const blot = Quill.find(td);
+                    return blot ? { index: quill.getIndex(blot), length: blot.length() } : null;
+                }).filter(Boolean);
+            }
+
+            function addRow(form) {
+                if (form.querySelector('.tc-row')) return;
+                const title = (form.querySelector('.properties-form-header')?.textContent || '').trim();
+                pending = collectRanges(/^table/i.test(title));
+
+                // read the color the text already has
+                let current = '';
+                if (pending.length) {
+                    const f = quill.getFormat(pending[0].index, pending[0].length);
+                    if (typeof f.color === 'string') current = toHex(f.color);
+                }
+
+                const row = document.createElement('div');
+                row.className = 'properties-form-row tc-row';
+                row.innerHTML =
+                    '<label class="ql-table-dropdown-label">Text color</label>' +
+                    '<div class="ql-table-color-container">' +
+                      '<div class="label-field-view label-field-view-color">' +
+                        '<div class="label-field-view-input-wrapper">' +
+                          '<input type="text" placeholder="#RRGGBB" class="property-input tc-hex"><label>Color</label>' +
+                        '</div>' +
+                      '</div>' +
+                      '<input type="color" class="tc-native">' +
+                    '</div>';
+
+                const actions = form.querySelector(':scope > .properties-form-action-row');
+                form.insertBefore(row, actions);
+
+                const hex = row.querySelector('.tc-hex');
+                const native = row.querySelector('.tc-native');
+                hex.value = current;
+                native.value = current || '#ffffff';
+                let touched = false;
+
+                native.addEventListener('input', () => { hex.value = native.value; touched = true; });
+                native.addEventListener('change', () => { hex.value = native.value; touched = true; });
+                hex.addEventListener('input', () => {
+                    touched = true;
+                    const c = normalize(hex.value);
+                    if (c) native.value = c;
+                });
+
+                actions.querySelector('button[label="save"]').addEventListener('click', () => {
+                    if (!touched || !pending || !pending.length) return;
+                    const raw = hex.value.trim();
+                    const value = raw === '' ? false : normalize(raw);   // false = remove the color
+                    if (raw !== '' && !value) return;                    // invalid, do nothing
+                    const ranges = pending;
+                    setTimeout(() => ranges.forEach(r =>
+                        quill.formatText(r.index, r.length, 'color', value, 'user')), 100);
+                });
+            }
+
+            new MutationObserver(muts => {
+                muts.forEach(m => m.addedNodes.forEach(n => {
+                    if (n.nodeType !== 1) return;
+                    const f = n.matches('.ql-table-properties-form') ? n : n.querySelector('.ql-table-properties-form');
+                    if (f) addRow(f);
+                }));
+            }).observe(document.body, { childList: true, subtree: true });
+        })();
+
+                const colorInput = document.createElement('input');
+        colorInput.type = 'color';
+        colorInput.style.cssText = 'position:fixed;opacity:0;pointer-events:none;';
+        document.body.appendChild(colorInput);
+
+        let colorRange = null;
+
+        function pickTextColor() {
+            colorRange = quill.getSelection();
+            if (!colorRange) return;
+            colorInput.value = '#ffffff';
+            colorInput.click();
+        }
+
+        colorInput.addEventListener('input', function () {
+            if (!colorRange) return;
+            quill.setSelection(colorRange.index, colorRange.length, 'silent');
+            quill.format('color', colorInput.value, 'user');
+        });
+
+                const scrollToCursor = quill.scrollSelectionIntoView.bind(quill);   // keep the real function
+        const tableBtn = document.querySelector('.ql-toolbar .ql-table-better');
+
+        if (tableBtn) {
+            // 1. Block the scroll caused by pressing the table button
+            tableBtn.addEventListener('pointerdown', () => {
+                quill.scrollSelectionIntoView = () => {};
+                setTimeout(() => { quill.scrollSelectionIntoView = scrollToCursor; }, 400);
+            }, true);
+        }
+
+        // 2. Scroll to the cursor once a table has actually been inserted
+        let tableCount = 0;
+        let ready = false;
+        setTimeout(() => {                         // skip tables from loading an existing post
+            tableCount = quill.root.querySelectorAll('table').length;
+            ready = true;
+        }, 0);
+
+        quill.on('text-change', (delta, oldDelta, source) => {
+            if (!ready || source !== 'user') return;
+            const count = quill.root.querySelectorAll('table').length;
+            if (count > tableCount) {
+                setTimeout(scrollToCursor, 50);    // let the plugin finish placing the cursor
+            }
+            tableCount = count;
+        });
+
+                const decorator = document.querySelector('.quill-decorator');
+        document.addEventListener('pointerdown', function (e) {
+            const inside = e.target.closest('.quill-decorator, [class*="ql-table"]');
+            decorator.classList.toggle('quill-active', !!inside);
+        }, true);
 
         function insertImageByUrl() {
             const url = prompt('Paste the image URL:');
@@ -177,7 +343,22 @@
             quill.root.innerHTML = hiddenInput.value;
         }
 
-                document.getElementById('update-form').addEventListener('submit', function () {
+                const form = document.getElementById('update-form');
+
+        // Buttons without a type default to "submit", so set them to plain buttons
+        function fixButtons(root) {
+            root.querySelectorAll('button:not([type])').forEach(b => b.type = 'button');
+        }
+        fixButtons(form);
+        new MutationObserver(() => fixButtons(form))
+            .observe(form, { childList: true, subtree: true });
+
+        // Safety net: only the Save button may submit the form
+        form.addEventListener('submit', function (e) {
+            if (e.submitter && e.submitter.id !== 'save-btn') e.preventDefault();
+        }, true);
+
+                form.addEventListener('submit', function () {
             hiddenInput.value = quill.root.innerHTML;
         });
     </script>
