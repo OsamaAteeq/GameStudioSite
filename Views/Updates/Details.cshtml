@@ -57,7 +57,7 @@
 
 @section Scripts {
     <script>
-
+        const facadeImage = @Json.Serialize(Model.FeaturedImageUrl);
                 document.querySelectorAll('.post-content table').forEach(function (t) {
             const wrap = document.createElement('div');
             wrap.className = 'table-scroll';
@@ -104,6 +104,10 @@
             const facade = document.createElement('button');
             facade.type = 'button';
             facade.className = 'embed-facade';
+                    if (facadeImage) {
+            facade.classList.add('has-image');
+            facade.style.setProperty('--facade-image', 'url(' + JSON.stringify(facadeImage) + ')');
+        }
             //facade.style.maxWidth = width + 'px';
             facade.style.aspectRatio = width + ' / ' + height;
             facade.innerHTML =

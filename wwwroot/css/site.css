@@ -1400,6 +1400,33 @@ input, textarea {
     text-transform: uppercase;
     font-size: 0.85rem;
 }
+.embed-facade {
+    position: relative;
+    overflow: hidden;
+}
+
+    .embed-facade.has-image {
+        background: var(--facade-image) center / cover no-repeat;
+    }
+
+        /* your gradient, laid over the image */
+        .embed-facade.has-image::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--color-navy-black), var(--color-navy-deep));
+            opacity: 0.75;
+            transition: opacity 0.15s ease;
+        }
+
+        .embed-facade.has-image:hover::before {
+            opacity: 0.6; /* the image brightens a little on hover */
+        }
+
+    /* keep the play button and label above the overlay */
+    .embed-facade > * {
+        position: relative;
+    }
 
 /* Media Queries */
 
