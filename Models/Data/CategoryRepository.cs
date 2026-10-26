@@ -18,16 +18,16 @@ namespace GameStudioSite.Data
             return _categories.Find(_ => true).SortBy(c => c.Name).ToList();
         }
 
-        public bool NameExists(string name)
-        {
-            var normalized = Normalize(name);
-            // Case-insensitive match: ^normalized$ anchors it to an exact match (not "contains"),
-            // and "i" makes it ignore case entirely at the database level.
-            var filter = Builders<Category>.Filter.Regex(
-                c => c.Name,
-                new MongoDB.Bson.BsonRegularExpression($"^{System.Text.RegularExpressions.Regex.Escape(normalized)}$", "i"));
+        // spaces become hyphens, so "Dev Logs" is "Dev-Logs" in URLs
+        public static string Slugify(string name) =>
+            System.Text.RegularExpressions.Regex.Replace(name.Trim(), @"\s+", "-");
 
-            return _categories.Find(filter).Any();
+        // true if another category would produce the same URL segment
+        public bool SlugExists(string name)
+        {
+            var wanted = Slugify(Normalize(name));
+            return _categories.Find(_ => true).Project(c => c.Name).ToList()
+                .Any(n => string.Equals(Slugify(n), wanted, StringComparison.OrdinalIgnoreCase));
         }
 
         public List<string> GetPrivateCategoryNames()

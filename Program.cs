@@ -4,6 +4,8 @@ using GameStudioSite.Data;
 using GameStudioSite.Services;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
+using System.Net;
+using System.Net.Sockets;
 
 var builder = WebApplication.CreateBuilder(args);
 var keysPath = builder.Configuration["DataProtection:KeysPath"];
@@ -39,17 +41,88 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Admin/Login";
     options.AccessDeniedPath = "/Admin/Login";
 });
+builder.Services.AddHttpClient("GameUrlValidation")
+    .ConfigurePrimaryHttpMessageHandler(() =>
+        new SocketsHttpHandler
+        {
+            AllowAutoRedirect = false,
+            UseProxy = false,
+            ConnectTimeout = TimeSpan.FromSeconds(5),
+
+            ConnectCallback = async (context, cancellationToken) =>
+            {
+                IPAddress[] addresses;
+
+                try
+                {
+                    addresses = await Dns.GetHostAddressesAsync(
+                        context.DnsEndPoint.Host,
+                        cancellationToken);
+                }
+                catch (SocketException ex)
+                {
+                    throw new HttpRequestException(
+                        "The hostname could not be resolved.",
+                        ex);
+                }
+
+                if (addresses.Length == 0 ||
+                    addresses.Any(a => !PublicUrlValidator.IsPublicAddress(a)))
+                {
+                    throw new HttpRequestException(
+                        "The hostname resolves to a non-public IP address.");
+                }
+
+                Exception? lastError = null;
+
+                foreach (var address in addresses)
+                {
+                    var socket = new Socket(
+                        address.AddressFamily,
+                        SocketType.Stream,
+                        ProtocolType.Tcp)
+                    {
+                        NoDelay = true
+                    };
+
+                    try
+                    {
+                        await socket.ConnectAsync(
+                            new IPEndPoint(address, context.DnsEndPoint.Port),
+                            cancellationToken);
+
+                        return new NetworkStream(socket, ownsSocket: true);
+                    }
+                    catch (Exception ex) when (
+                        ex is SocketException or OperationCanceledException)
+                    {
+                        socket.Dispose();
+                        lastError = ex;
+
+                        if (ex is OperationCanceledException)
+                            throw;
+                    }
+                }
+
+                throw new HttpRequestException(
+                    "Could not connect to the public hostname.",
+                    lastError);
+            }
+        });
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<GameRepository>();
 builder.Services.AddScoped<BlogPostRepository>();
-builder.Services.AddHttpClient();
 builder.Services.AddScoped<ImageUploadService>();
 builder.Services.AddScoped<CategoryRepository>();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetRequiredService<MongoDbContext>().EnsureIndexes(app.Logger);
+}
 
 using (var scope = app.Services.CreateScope())
 {

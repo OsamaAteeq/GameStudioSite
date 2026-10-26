@@ -13,6 +13,6 @@ namespace GameStudioSite.Models
         public string Slug { get; set; } = "";
         public string Description { get; set; } = "";
         public string ImageUrl { get; set; } = "";
-        public string ItchIoUrl { get; set; } = "";
+        public string GameUrl { get; set; } = "";
     }
 }

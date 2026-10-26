@@ -16,19 +16,37 @@
             <div class="game-grid">
                 @foreach (var game in Model.LatestGames)
                 {
-                    <a class="game-card"
-                       asp-controller="Home"
-                       asp-action="Games"
-                       asp-fragment="@game.Slug"
-                       style="--card-image: url('@game.ImageUrl');">
+                    @if (game.GameUrl.StartsWith("/"))
+                    {
+                        <a class="game-card"
+                           href="@game.GameUrl"
+                           style="--card-image: url('@game.ImageUrl');">
 
-                        <div class="game-card-content">
-                            <h4>
-                                @game.Title
-                            </h4>
-                        </div>
+                            <div class="game-card-content">
+                                <h4>
+                                    @game.Title
+                                </h4>
+                            </div>
 
-                    </a>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="game-card"
+                           asp-controller="Home"
+                           asp-action="Games"
+                           asp-fragment="@game.Slug"
+                           style="--card-image: url('@game.ImageUrl');">
+
+                            <div class="game-card-content">
+                                <h4>
+                                    @game.Title
+                                </h4>
+                            </div>
+
+                        </a>
+                    }
+                    
                 }
             </div>
             

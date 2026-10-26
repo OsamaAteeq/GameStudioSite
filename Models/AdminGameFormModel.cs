@@ -15,8 +15,8 @@ namespace GameStudioSite.Models
         [Required, StringLength(500)]
         public string Description { get; set; } = "";
 
-        [Required, Url]
-        public string ItchIoUrl { get; set; } = "";
+        [Required, StringLength(500)]
+        public string GameUrl { get; set; } = "";
 
         public IFormFile? ImageFile { get; set; }
 

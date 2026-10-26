@@ -14,6 +14,12 @@ namespace GameStudioSite.Controllers
         private readonly ImageUploadService _imageUploadService;
         private readonly CategoryRepository _categoryRepository;
 
+        private static readonly HashSet<string> ReservedCategoryNames = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "Admin", "Account", "Api", "Home", "Images", "Css", "Js", "Lib",
+            "Updates", "Blog", "Services", "About", "Contact"
+        };
+
         public AdminBlogController(BlogPostRepository blogPostRepository, ImageUploadService imageUploadService, CategoryRepository categoryRepository)
         {
             _blogPostRepository = blogPostRepository;
@@ -32,10 +38,14 @@ namespace GameStudioSite.Controllers
             {
                 TempData["AdminMessage"] = "Category name can't be empty.";
             }
-            else if (_categoryRepository.NameExists(name))
+            else if (ReservedCategoryNames.Contains(CategoryRepository.Slugify(name)))
+            {
+                TempData["AdminMessage"] = $"\"{name}\" is a reserved name and can't be used as a category.";
+            }
+            else if (_categoryRepository.SlugExists(name))
             {
                 var normalized = CategoryRepository.Normalize(name);
-                TempData["AdminMessage"] = $"\"{normalized}\" already exists.";
+                TempData["AdminMessage"] = $"\"{normalized}\" already exists (or looks the same in a URL).";
             }
             else
             {
@@ -99,6 +109,12 @@ namespace GameStudioSite.Controllers
             var form = model.Form;
             if (!ModelState.IsValid)
             {
+                model.Categories = _categoryRepository.GetAll();
+                return View(model);
+            }
+            if (_blogPostRepository.SlugTaken(form.Category, form.Slug, null))
+            {
+                ModelState.AddModelError("Form.Slug", $"A post with this slug already exists in \"{form.Category}\".");
                 model.Categories = _categoryRepository.GetAll();
                 return View(model);
             }
@@ -184,7 +200,12 @@ namespace GameStudioSite.Controllers
                 model.Categories = _categoryRepository.GetAll();
                 return View(model);
             }
-
+            if (_blogPostRepository.SlugTaken(form.Category, form.Slug, id))
+            {
+                ModelState.AddModelError("Form.Slug", $"A post with this slug already exists in \"{form.Category}\".");
+                model.Categories = _categoryRepository.GetAll();
+                return View(model);
+            }
             var imageUrl = form.ExistingImageUrl;
 
             if (form.ImageFile != null)

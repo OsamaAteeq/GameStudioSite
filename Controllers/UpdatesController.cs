@@ -37,7 +37,7 @@ namespace GameStudioSite.Controllers
         [HttpGet]
         public IActionResult Details(string category, string slug)
         {
-            var post = _blogPostRepository.GetBySlug(slug);
+            var post = _blogPostRepository.GetByCategoryAndSlug(category, slug);
             if (post == null)
             {
                 return NotFound();

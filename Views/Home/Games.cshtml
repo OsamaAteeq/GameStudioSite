@@ -37,7 +37,14 @@
                     <div class="vertical-content">
                         <h3 class="center-text">@game.Title</h3>
                         <p class="center-text"> @game.Description</p>
-                        <a class="btn" href="@game.ItchIoUrl" target="_blank" rel="noopener">Play Now</a>
+                        @if (game.GameUrl.StartsWith("/"))
+                        {
+                            <a class="btn" href="@game.GameUrl">Play Now</a>
+                        }
+                        else
+                        {
+                            <a class="btn" href="@game.GameUrl" target="_blank" rel="noopener">Play Now</a>
+                        }
                     </div>
                     <img src="@game.ImageUrl" alt="@game.Title" />
                 }
@@ -48,7 +55,14 @@
                     <div class="vertical-content">
                         <h3 class="center-text">@game.Title</h3>
                         <p class="center-text"> @game.Description</p>
-                        <a class="btn" href="@game.ItchIoUrl" target="_blank" rel="noopener">Play Now</a>
+                        @if (game.GameUrl.StartsWith("/"))
+                        {
+                            <a class="btn" href="@game.GameUrl">Play Now</a>
+                        }
+                        else
+                        {
+                            <a class="btn" href="@game.GameUrl" target="_blank" rel="noopener">Play Now</a>
+                        }
                     </div>
                 }
             </div>

@@ -68,9 +68,21 @@ namespace GameStudioSite.Data
                 .ToList();
         }
 
-        public BlogPost? GetBySlug(string slug)
+        public BlogPost? GetByCategoryAndSlug(string categorySegment, string slug)
         {
-            return _posts.Find(p => p.Slug == slug).FirstOrDefault();
+            var wanted = CategoryRepository.Slugify(categorySegment);
+            return _posts.Find(p => p.Slug == slug)
+                .ToList()
+                .FirstOrDefault(p => string.Equals(
+                    CategoryRepository.Slugify(p.Category), wanted, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public bool SlugTaken(string category, string slug, string? excludeId)
+        {
+            var f = Builders<BlogPost>.Filter;
+            var filter = f.Eq(p => p.Category, category) & f.Eq(p => p.Slug, slug);
+            if (!string.IsNullOrEmpty(excludeId)) filter &= f.Ne(p => p.Id, excludeId);
+            return _posts.Find(filter).Any();
         }
 
         public void Create(BlogPost post) => _posts.InsertOne(post);

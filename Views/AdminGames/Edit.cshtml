@@ -30,9 +30,12 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="ItchIoUrl"></label>
-        <input asp-for="ItchIoUrl" class="form-control" />
-        <span asp-validation-for="ItchIoUrl" class="field-validation-error"></span>
+        <label asp-for="GameUrl"></label>
+        <input asp-for="GameUrl"
+               class="form-control"
+               placeholder="/games/my-game or https://yourname.itch.io/my-game" />
+        <span asp-validation-for="GameUrl"
+              class="field-validation-error"></span>
     </div>
 
     <div class="form-group">
