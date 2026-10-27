@@ -65,7 +65,7 @@ h4 {
 }
 
 article h1, article h2, article h3 {
-    padding-top: 2rem;
+    padding-top: 2.5rem;
     padding-bottom: 0.5rem;
     margin: 0;
 }
@@ -76,11 +76,13 @@ article h1 {
 }
 
 article h2 {
+    padding-top: 2rem;
     font-size: clamp(1.5rem, 2.2vw, 2.2rem);
 }
 
 article h3 {
-    font-size: clamp(1.5rem, 2.2vw, 2.2rem);
+    padding-top: 1.5rem;
+    font-size: clamp(1.2rem, 1.7vw, 1.7rem);
 }
 
 p {
