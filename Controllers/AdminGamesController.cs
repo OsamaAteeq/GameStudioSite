@@ -3,7 +3,6 @@ using GameStudioSite.Models;
 using GameStudioSite.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Net.Sockets;
 
 namespace GameStudioSite.Controllers
@@ -18,7 +17,7 @@ namespace GameStudioSite.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
 
 
-        private async Task<string?> ValidateGameUrlAsync(string? value)
+        private async Task<string?> ValidateGameUrlAsync(string? value, bool skipLiveCheck = false)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return "Please enter a game URL.";
@@ -66,6 +65,11 @@ namespace GameStudioSite.Controllers
             {
                 return "Enter an internal path or a valid HTTP/HTTPS URL.";
             }
+
+
+            // The URL was already accepted when it was saved, so skip the network request
+            if (skipLiveCheck)
+                return null;
 
             // Reject localhost and private/local IP destinations.
             // DNS and redirect destinations also need checking before
@@ -211,6 +215,8 @@ namespace GameStudioSite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AdminGameFormModel form)
         {
+
+            form.GameUrl = form.GameUrl?.Trim();
             if (!IsValidGameUrl(form.GameUrl))
             {
                 ModelState.AddModelError(
@@ -292,6 +298,17 @@ namespace GameStudioSite.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, AdminGameFormModel form)
         {
+            form.GameUrl = form.GameUrl?.Trim();
+
+            var existing = _gameRepository.GetById(id);
+            if (existing == null)
+            {
+                return NotFound();
+            }
+
+            var urlUnchanged = string.Equals(
+                existing.GameUrl?.Trim(), form.GameUrl, StringComparison.Ordinal);
+
             if (!IsValidGameUrl(form.GameUrl))
             {
                 ModelState.AddModelError(
@@ -301,7 +318,7 @@ namespace GameStudioSite.Controllers
             }
             else
             {
-                var urlError = await ValidateGameUrlAsync(form.GameUrl);
+                var urlError = await ValidateGameUrlAsync(form.GameUrl, skipLiveCheck: urlUnchanged);
 
                 if (urlError != null)
                 {

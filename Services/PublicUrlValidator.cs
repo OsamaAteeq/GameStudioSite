@@ -56,6 +56,10 @@ public static class PublicUrlValidator
                 (bytes[2] & 0xFE) == 0x00)
                 return false;
 
+            if (bytes[0] == 0x20 && bytes[1] == 0x02) return false;
+
+            if (bytes[0] == 0x3F && bytes[1] == 0xFF && (bytes[2] & 0xF0) == 0x00) return false;
+
             return true;
         }
 
