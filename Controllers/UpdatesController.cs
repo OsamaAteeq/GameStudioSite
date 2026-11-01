@@ -42,8 +42,27 @@ namespace GameStudioSite.Controllers
             {
                 return NotFound();
             }
-
+            var canonicalCategory = CategoryRepository.Slugify(post.Category);
+            if (!string.Equals(category, canonicalCategory, StringComparison.Ordinal))
+            {
+                return RedirectPermanent($"/{canonicalCategory}/{post.Slug}");
+            }
             return View(post);
+        }
+
+        [HttpGet("/{category}", Order = 1000)]
+        public IActionResult CategoryRedirect(string category)
+        {
+            var wanted = CategoryRepository.Slugify(category);
+
+            // Only public categories that have posts
+            var match = _blogPostRepository.GetAllCategoriesPublic()
+                .FirstOrDefault(c => string.Equals(
+                    CategoryRepository.Slugify(c), wanted, StringComparison.OrdinalIgnoreCase));
+
+            if (match is null) return NotFound();
+
+            return Redirect($"/Updates?category={Uri.EscapeDataString(match)}#updates-content");
         }
     }
 }

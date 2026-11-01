@@ -241,3 +241,18 @@ textarea.form-control {
 .admin-sort-bar {
     margin-bottom: 1rem;
 }
+
+#visibilityFilter .btn {
+    border: 1px solid #6c757d;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+
+    #visibilityFilter .btn.active,
+    #visibilityFilter .btn.active:hover,
+    #visibilityFilter .btn.active:focus {
+        background: #0170B9; 
+        border-color: #0170B9;
+        color: #fff;
+    }

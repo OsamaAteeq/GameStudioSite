@@ -1,4 +1,5 @@
-﻿@model GameStudioSite.Models.AdminBlogIndexViewModel
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+@model GameStudioSite.Models.AdminBlogIndexViewModel
 @{
     ViewData["Title"] = "Manage Updates";
 }
@@ -53,7 +54,20 @@
         <a class="btn btn-small" asp-action="Index" asp-route-sort="oldest">Showing: Newest first &middot; Switch to oldest first</a>
     }
 </div>
+<div class="btn-group btn-group-sm ms-3" role="group" aria-label="Filter posts by visibility" id="visibilityFilter" style="margin-bottom:1rem;">
+    <button type="button" class="btn btn-outline-secondary active" data-filter="all">All</button>
+    <button type="button" class="btn btn-outline-secondary" data-filter="public">Public</button>
+    <button type="button" class="btn btn-outline-secondary" data-filter="hidden">Hidden</button>
+</div>
 <table class="admin-table">
+    <colgroup>
+        <col style="width: auto;" />
+        <col style="width: auto;" />
+        <col style="width: auto;" />
+        <col style="width: auto;" />
+        <col style="width: auto;" />
+        <col style="width: 20%;" />
+    </colgroup>
     <thead>
         <tr>
             <th>Image</th>
@@ -61,12 +75,13 @@
             <th>Category</th>
             <th>Published</th>
             <th></th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var post in Model.Posts)
         {
-            <tr>
+            <tr data-post-row data-hidden-category="@(Model.PrivateCategoryNames.Contains(post.Category) ? "true" : "false")">
                 <td><img src="@post.FeaturedImageUrl" alt="@post.ImageAltText" class="admin-thumb" /></td>
                 <td>@post.Title</td>
                 <td>@post.Category</td>
@@ -81,7 +96,7 @@
                         <span class="status-badge status-public">Public</span>
                     }
                 </td>
-                <td class="admin-row-actions">
+                <td class="admin-row-actions" style="border:none;">
                     <a asp-action="Edit" asp-route-id="@post.Id">Edit</a>
                     <form asp-action="Delete" asp-route-id="@post.Id" asp-route-sort="@(Model.OldestFirst ? "oldest" : null)"
                           method="post" class="admin-inline-form"
@@ -89,9 +104,65 @@
                         @Html.AntiForgeryToken()
                         <button type="submit" class="admin-link-button">Delete</button>
                     </form>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" style="padding:0.6rem;"
+                            data-copy-path="@post.Url" title="Copy link" aria-label="Copy link">
+                        <i class="fa-regular fa-copy"></i>
+                    </button>
                 </td>
                 
             </tr>
         }
     </tbody>
 </table>
+
+<script>
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('[data-copy-path]');
+        if (!btn) return;
+        const link = location.origin + btn.dataset.copyPath;
+        const icon = btn.querySelector('i');
+        try {
+            await navigator.clipboard.writeText(link);
+            icon.className = 'fa-solid fa-check';
+            btn.title = 'Copied!';
+        } catch {
+            prompt('Copy this link:', link);
+        }
+        setTimeout(() => {
+            icon.className = 'fa-regular fa-copy';
+            btn.title = 'Copy link';
+        }, 1500);
+    });
+
+    (function () {
+        const group = document.getElementById('visibilityFilter');
+        if (!group) return;
+        const buttons = group.querySelectorAll('[data-filter]');
+        const KEY = 'admin.postVisibilityFilter';
+
+        function apply(filter) {
+            document.querySelectorAll('[data-post-row]').forEach(row => {
+                const hidden = row.dataset.hiddenCategory === 'true';
+                const show = filter === 'all'
+                    || (filter === 'public' && !hidden)
+                    || (filter === 'hidden' && hidden);
+                row.style.display = show ? '' : 'none';
+            });
+            buttons.forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+        }
+
+        let current = 'all';
+        try {
+            const saved = localStorage.getItem(KEY);
+            if (['all', 'public', 'hidden'].includes(saved)) current = saved;
+        } catch { }
+
+        buttons.forEach(b => b.addEventListener('click', () => {
+            current = b.dataset.filter;
+            try { localStorage.setItem(KEY, current); } catch { }
+            apply(current);
+        }));
+
+        apply(current);
+    })();
+</script>
