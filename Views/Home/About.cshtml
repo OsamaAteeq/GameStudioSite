@@ -16,9 +16,26 @@
         <div class="vertical-content">
             <p class="center-text"> Our vision is to build a thriving network where developers, creators, businesses, and players can come together to make great things happen. We aspire to create opportunities for talent to grow, help ambitious ideas become reality, and develop games shaped by the people who play them. Through collaboration, trust, and a shared passion for play, we aim to build an organization where everyone can contribute to something meaningful.</p>
         </div>
-        <img src="\images\Vision11.jpg" alt="Vision"/>
+        <div id="vision-scene" class="vision-scene">
+            <canvas id="vision-canvas"></canvas>
+        </div>
     </div>
 </div>
 
 <div class="gradient-black-actual-black">
 </div>
+
+
+
+@section Scripts {
+    <!script type="importmap" id="three-import-map">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+            }
+        }
+    </!script>
+
+    <script type="module" src="~/js/vision-scene.js" asp-append-version="true"></script>
+}
