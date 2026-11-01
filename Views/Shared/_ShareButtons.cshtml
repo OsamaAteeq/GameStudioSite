@@ -1,6 +1,7 @@
 ﻿@model string
+@inject IConfiguration Config
 @{
-    var postUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    var postUrl = $"{Config["Site:BaseUrl"]!.TrimEnd('/')}{Context.Request.Path}";
     var u = Uri.EscapeDataString(postUrl);
     var t = Uri.EscapeDataString(Model);
 }

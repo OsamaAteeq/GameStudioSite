@@ -106,11 +106,7 @@
         <div class="update-grid">
             @foreach (var update in Model.LatestBlogPosts)
             {
-                <a class="update-card"
-                   asp-controller="Updates"
-                   asp-action="Details"
-                   asp-route-category="@update.Category"
-                   asp-route-slug="@update.Slug">
+                <a class="update-card" href="@update.Url">
                     <div class="update-card-image">
                         <img src="@update.FeaturedImageUrl" alt="@update.ImageAltText"/>
                     </div>

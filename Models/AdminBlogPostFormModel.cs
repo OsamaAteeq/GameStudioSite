@@ -9,7 +9,7 @@ namespace GameStudioSite.Models
         [Required, StringLength(150)]
         public string Title { get; set; } = "";
 
-        [Required, StringLength(150)]
+        [Required, StringLength(150), RegularExpression(@"^[a-z0-9]+(?:-[a-z0-9]+)*$", ErrorMessage = "Use only lowercase letters, numbers and single hyphens (for example: my-first-post).")]
         public string Slug { get; set; } = "";
 
         [Required, StringLength(300)]

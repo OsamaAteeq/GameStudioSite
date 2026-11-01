@@ -1,0 +1,5 @@
+﻿User-agent: *
+Disallow: /Admin
+Disallow: /Account
+
+Sitemap: https://jzb4.com/sitemap.xml

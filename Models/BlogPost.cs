@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using GameStudioSite.Data;
 
 namespace GameStudioSite.Models
 {
@@ -19,5 +20,9 @@ namespace GameStudioSite.Models
         public string Category { get; set; } = "";
         public List<string> Tags { get; set; } = new();
         public bool ShowImage { get; set; } = true;
+
+
+        [BsonIgnore]
+        public string Url => $"/{CategoryRepository.Slugify(Category)}/{Slug}";
     }
 }

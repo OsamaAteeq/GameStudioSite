@@ -1,4 +1,20 @@
 ﻿@model GameStudioSite.Models.BlogPost
+@inject IConfiguration Config
+@{
+    var baseUrl = Config["Site:BaseUrl"]!.TrimEnd('/');
+}
+@section Head {
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="@Model.Title" />
+    <meta property="og:description" content="@Model.Excerpt" />
+    <meta property="og:url" content="@($"{baseUrl}{Context.Request.Path}")" />
+    @if (!string.IsNullOrEmpty(Model.FeaturedImageUrl))
+    {
+        <meta property="og:image" content="@($"{baseUrl}{Model.FeaturedImageUrl}")" />
+    }
+    <meta name="twitter:card" content="summary_large_image" />
+}
+
 @{
     ViewData["HeroImage"] = @Model.FeaturedImageUrl;
     ViewData["Heroless"] = true;

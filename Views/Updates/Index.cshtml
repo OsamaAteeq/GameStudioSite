@@ -10,7 +10,7 @@
     <a asp-action="Index" asp-fragment="updates-content" class="@(Model.SelectedCategory == null ? "active" : "")">All</a>
     @foreach (var cat in Model.Categories)
     {
-        <a asp-action="Index" asp-route-category="@cat" asp-fragment="updates-content"
+        <a asp-action="Index" asp-route-category="@cat" asp-fragment="updates-content" 
            class="@(Model.SelectedCategory == cat ? "active" : "")">@cat</a>
     }
 </div>
@@ -25,11 +25,7 @@
     <div class="update-list-grid">
     @foreach (var update in Model.Posts)
     {
-            <a class="update-list-card"
-               asp-controller="Updates"
-               asp-action="Details"
-               asp-route-category="@update.Category"
-               asp-route-slug="@update.Slug">
+            <a class="update-list-card" href="@update.Url">
                 <div class="update-list-card-image">
                     <img src="@update.FeaturedImageUrl" alt="@update.ImageAltText" />
                 </div>

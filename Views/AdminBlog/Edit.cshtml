@@ -92,6 +92,22 @@
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill-table-better@1.2.3/dist/quill-table-better.js"></script>
     <script>
+
+        const slugInput = document.getElementById('Form_Slug');
+    if (slugInput) {
+        slugInput.addEventListener('input', () => {
+            slugInput.value = slugInput.value
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^a-z0-9-]/g, '')
+                .replace(/-{2,}/g, '-');
+        });
+        slugInput.addEventListener('blur', () => {
+            slugInput.value = slugInput.value.replace(/^-+|-+$/g, '');
+        });
+    }
+
+
                 const icons = Quill.import('ui/icons');
         icons['embed'] = '<svg viewBox="0 0 18 18"><rect class="ql-stroke" height="10" width="12" x="3" y="4"></rect><circle class="ql-fill" cx="9" cy="9" r="2"></circle></svg>';
         icons['textcolor'] = '<svg viewBox="0 0 18 18"><path class="ql-stroke" d="M5 13 L9 3 L13 13 M6.5 9.5 H11.5"/><rect class="ql-fill" x="3" y="15" width="12" height="2"/></svg>';
