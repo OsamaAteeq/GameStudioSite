@@ -1,7 +1,7 @@
-﻿using System.Text;
-using System.Xml.Linq;
-using GameStudioSite.Data;
+﻿using GameStudioSite.Data;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Xml.Linq;
 
 namespace GameStudioSite.Controllers
 {

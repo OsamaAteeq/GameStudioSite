@@ -1,6 +1,6 @@
-﻿using MongoDB.Bson;
+﻿using GameStudioSite.Data;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using GameStudioSite.Data;
 
 namespace GameStudioSite.Models
 {

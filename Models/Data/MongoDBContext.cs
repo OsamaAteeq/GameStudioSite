@@ -1,5 +1,5 @@
-﻿using MongoDB.Driver;
-using GameStudioSite.Models;
+﻿using GameStudioSite.Models;
+using MongoDB.Driver;
 
 namespace GameStudioSite.Data
 {

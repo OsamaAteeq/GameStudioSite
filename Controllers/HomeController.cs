@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace GameStudioSite.Controllers
 {
-    
+
     public class HomeController : Controller
     {
         private readonly GameRepository _gameRepository;

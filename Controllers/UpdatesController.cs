@@ -10,7 +10,7 @@ namespace GameStudioSite.Controllers
         private readonly BlogPostRepository _blogPostRepository;
         private const int PageSize = 6;
 
-        public UpdatesController(BlogPostRepository blogPostRepository) 
+        public UpdatesController(BlogPostRepository blogPostRepository)
         {
             _blogPostRepository = blogPostRepository;
         }
