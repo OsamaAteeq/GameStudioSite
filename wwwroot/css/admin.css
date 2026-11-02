@@ -99,6 +99,8 @@
     flex-direction: row;
     gap: 1.5rem;
     align-items: center;
+    justify-content: center;
+    justify-items: center;
 }
     .admin-row-actions a 
     {
@@ -107,6 +109,11 @@
 
 .admin-inline-form {
     display: inline;
+}
+
+.admin-delete-form 
+{
+    margin:0;
 }
 
 .admin-link-button {

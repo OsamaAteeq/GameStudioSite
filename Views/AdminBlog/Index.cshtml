@@ -1,5 +1,4 @@
-﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
-@model GameStudioSite.Models.AdminBlogIndexViewModel
+﻿@model GameStudioSite.Models.AdminBlogIndexViewModel
 @{
     ViewData["Title"] = "Manage Updates";
 }
@@ -26,7 +25,7 @@
                     <span class="chip-private-label">(hidden)</span>
                 }
                 <form asp-action="DeleteCategory" asp-route-id="@category.Id" method="post"
-                      class="admin-inline-form" onsubmit="return confirm('Delete this category?');">
+                      class="admin-delete-form" onsubmit="return confirm('Delete this category?');">
                     @Html.AntiForgeryToken()
                     <button type="submit" class="category-chip-delete" title="Delete">&times;</button>
                 </form>
@@ -81,7 +80,7 @@
     <tbody>
         @foreach (var post in Model.Posts)
         {
-            <tr data-post-row data-hidden-category="@(Model.PrivateCategoryNames.Contains(post.Category) ? "true" : "false")">
+            <tr data-post-row data-hidden-category="@(Model.PrivateCategoryNames.Contains(post.Category) ? "true" : "false")" style="justify-content:center">
                 <td><img src="@post.FeaturedImageUrl" alt="@post.ImageAltText" class="admin-thumb" /></td>
                 <td>@post.Title</td>
                 <td>@post.Category</td>
@@ -96,18 +95,23 @@
                         <span class="status-badge status-public">Public</span>
                     }
                 </td>
-                <td class="admin-row-actions" style="border:none;">
-                    <a asp-action="Edit" asp-route-id="@post.Id">Edit</a>
-                    <form asp-action="Delete" asp-route-id="@post.Id" asp-route-sort="@(Model.OldestFirst ? "oldest" : null)"
-                          method="post" class="admin-inline-form"
-                          onsubmit="return confirm('Delete this update?');">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="admin-link-button">Delete</button>
-                    </form>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" style="padding:0.6rem;"
-                            data-copy-path="@post.Url" title="Copy link" aria-label="Copy link">
-                        <i class="fa-regular fa-copy"></i>
-                    </button>
+                <td style="border: none; border-left: solid;">
+                    <div class="admin-row-actions">
+                        <a asp-action="Edit" asp-route-id="@post.Id">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@post.Id" asp-route-sort="@(Model.OldestFirst ? "oldest" : null)" class="admin-delete-form"
+                            method="post" class="admin-inline-form"
+                            onsubmit="return confirm('Delete this update?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="admin-link-button">Delete</button>
+                        </form>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" style="padding:0.6rem;"
+                                data-copy-path="@post.Url" title="Copy link" aria-label="Copy link">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                        <a href="@post.FeaturedImageUrl" download title="Download Image" aria-label="Download Image">
+                            <i class="fa-solid fa-download"></i>
+                        </a>
+                    </div>
                 </td>
                 
             </tr>
