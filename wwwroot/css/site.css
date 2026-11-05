@@ -620,10 +620,6 @@ input, textarea {
         transition: opacity 0.3s ease;
     }
 
-    .game-card:hover::before {
-        opacity: 1;
-    }
-
     .game-card:hover::after {
         opacity: 0.9;
     }
