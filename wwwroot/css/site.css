@@ -528,8 +528,8 @@ input, textarea {
         content: "";
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.6);
         z-index: 0;
+        background: rgba(0, 0, 0, 0.6);
         transition: background 0.3s ease;
     }
 
@@ -554,6 +554,7 @@ input, textarea {
     position: relative;
     z-index: 1;
     padding: 2rem;
+    height: 100%;
 }
     .service-card-content h3 {
         margin: 0 0 0.75rem;
@@ -600,7 +601,7 @@ input, textarea {
         content: "";
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.3);
         z-index: 0;
         transition: background 0.3s ease;
     }
@@ -619,6 +620,10 @@ input, textarea {
         transition: opacity 0.3s ease;
     }
 
+    .game-card:hover::before {
+        opacity: 1;
+    }
+
     .game-card:hover::after {
         opacity: 0.9;
     }
@@ -626,11 +631,15 @@ input, textarea {
 .game-card-content {
     z-index: 1;
     padding: 2rem;
+    padding-top: 4rem;
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    background: linear-gradient(180deg, transparent, var(--color-navy-black));
 }
+
+
 
     .game-card-content h4 {
         font-family: var(--font-heading);
