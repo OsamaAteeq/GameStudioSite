@@ -1,6 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Zen+Dots&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Zen+Dots&display=swap');
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Zen Dots';
+    src: url('/fonts/ZenDots-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Philosopher';
+    src: url('/fonts/Philosopher-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
 :root {
     --color-navy-deep: #00004d;
@@ -64,15 +84,28 @@ h4 {
     text-transform: uppercase;
 }
 
-article h1, article h2, article h3 {
-    padding-top: 2.5rem;
-    padding-bottom: 0.5rem;
-    margin: 0;
+address {
+    font-style: normal;
+}
+
+article li[data-list="bullet"] {
+    list-style-type: disc;
+}
+
+article li[data-list="ordered"] {
+    list-style-type: decimal;
+}
+
+article li > .ql-ui {
+    display: none;
 }
 
 
-article h1 {
-    font-size: clamp(2rem, 3vw, 3rem);
+article h2, article h3, article h4 {
+    padding-top: 2.5rem;
+    padding-bottom: 0.5rem;
+    margin: 0;
+    white-space: normal;
 }
 
 article h2 {
@@ -83,6 +116,11 @@ article h2 {
 article h3 {
     padding-top: 1.5rem;
     font-size: clamp(1.2rem, 1.7vw, 1.7rem);
+}
+
+article h4 {
+    padding-top: 1rem;
+    font-size: clamp(1.1rem, 1.5vw, 1.5rem);
 }
 
 p {
@@ -974,7 +1012,7 @@ input, textarea {
 }
 .contact-block {
     align-items: flex-start;
-    margin-block: 2rem;
+    margin-block: 1rem;
 }
 
     .contact-block a {
@@ -990,7 +1028,6 @@ input, textarea {
 .contact-info {
     display: inherit;
     flex-direction: inherit;
-    margin-top: 1.5rem;
 }
 .map {
     margin-top: 2rem;
@@ -1039,6 +1076,8 @@ input, textarea {
         transform: rotate(360deg);
     }
 }
+
+
 
 #contact-submit-btn:disabled {
     opacity: 0.75;
@@ -1144,7 +1183,7 @@ input, textarea {
 .post-hero-overlay {
     width: 100%;
     background: linear-gradient(180deg, transparent, var(--color-navy-black));
-    padding: 4rem 2rem 2rem;
+    padding: 4rem clamp(0.5rem, 4vw, 10rem) 2rem;
     color: var(--color-white);
     display: flex;
     flex-direction: row;
@@ -1167,8 +1206,9 @@ input, textarea {
     }
 
 .post-title {
+    font-size: clamp(2rem, 3vw, 3rem);
     margin: 0 0 0.5rem;
-    white-space: wrap;
+    white-space: normal;
     text-align: center;
 }
 
@@ -1287,7 +1327,7 @@ input, textarea {
 
 /* Social CSS */
 .share-section {
-    margin: 1.5rem 2rem;
+    margin: 1.5rem clamp(0.5rem, 4vw, 2rem);
     align-self: start;
 }
 
@@ -1435,6 +1475,132 @@ input, textarea {
         position: relative;
     }
 
+    /*Map Cover*/
+.map-box {
+    min-height: 300px;
+    min-width: 400px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    background: #020212;
+    border: 1px solid #cbcbe9;
+    border-radius: 8px;
+}
+
+    .map-box iframe {
+        border: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 300px;
+    }
+
+.map-load {
+    background: #0170B9;
+    color: #fff;
+    border: 0;
+    cursor: pointer;
+    padding: .6rem 1.2rem;
+    border-radius: 6px;
+    font: inherit;
+}
+
+    .map-load:hover {
+        background: #04c9cb;
+        color: #020212;
+    }
+
+.map-note {
+    margin: 0;
+    font-size: .8rem;
+    opacity: .7;
+}
+
+/*Legal Page*/
+.legal-page h2 {
+    margin-top: 2rem;
+    white-space: normal;
+}
+.legal-page h1 {
+    font-size: clamp(1.5rem, 7vw, 2rem);
+}
+
+.legal-page h2 {
+    font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+}
+
+.footer-legal {
+    margin: 0;
+    margin-top: 2rem;
+}
+
+/* Skip to content*/
+.skip-link {
+    position: absolute;
+    left: -9999px;
+}
+
+    .skip-link:focus {
+        left: 1rem;
+        top: 1rem;
+        z-index: 1000;
+        background: #fff;
+        color: #020212;
+        padding: .5rem 1rem;
+        border-radius: 4px;
+    }
+
+    /*Search*/
+
+.search-form {
+    display: flex;
+    gap: .5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+    .search-form input {
+        flex: 1;
+        padding: .6rem .8rem;
+        border-radius: 6px;
+        border: 1px solid #cbcbe9;
+        font: inherit;
+    }
+
+.error-links {
+    margin-top: 1.5rem;
+}
+
+.search-results {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    margin-top:2rem;
+}
+
+    .search-results li {
+        margin-bottom: 1.25rem;
+    }
+
+.search-cat {
+    opacity: .6;
+    font-size: .85rem;
+    margin-left: .5rem;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+
 /* Media Queries */
 
 @media (hover: hover) and (pointer: fine) {
@@ -1553,6 +1719,20 @@ input, textarea {
 }
 /* Small mobile */
 @media (max-width: 576px) {
+
+    .dark-background {
+        padding: clamp(0.5rem, calc( (100vw - 300px) * calc( (3 * 16) / (576 - 300) )), 3rem) clamp(0.5rem, calc( (100vw - 300px) * calc( (3 * 16) / (576 - 300) )), 3rem)
+    }
+    .light-background {
+        padding: clamp(0rem, calc( (100vw - 200px) * calc( (3 * 16) / (576 - 200) )), 3rem) clamp(0rem, calc( (100vw - 200px) * calc( (3 * 16) / (576 - 200) )), 3rem)
+    }
+    .legal-page h1 {
+        font-size: clamp(1.5rem, 7vw, 2rem);
+    }
+
+    .legal-page h2 {
+        font-size: clamp(1.2rem, 5.5vw, 1.5rem);
+    }
     h1 {
         font-size: clamp(2rem, 9vw, 2.5rem);
     }
@@ -1567,7 +1747,7 @@ input, textarea {
     h4 {
         font-size: clamp(1rem, 4vw, 1.2rem);
     }
-    article h1 {
+    .post-title {
         font-size: clamp(1.5rem, 7vw, 2rem);
     }
 
@@ -1578,6 +1758,17 @@ input, textarea {
     article h3 {
         font-size: clamp(1rem, 4vw, 1.2rem);
     }
+
+    article h4 {
+        font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+    }
+
+    article p {
+        
+        font-size: clamp(0.8rem, 3vw, 1rem);
+        line-height: 1.3;
+    }
+
     .slogan {
         white-space: break-spaces;
     }

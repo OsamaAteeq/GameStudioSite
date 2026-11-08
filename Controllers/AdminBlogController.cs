@@ -17,7 +17,7 @@ namespace GameStudioSite.Controllers
         private static readonly HashSet<string> ReservedCategoryNames = new(StringComparer.OrdinalIgnoreCase)
         {
             "Admin", "Account", "Api", "Home", "Images", "Css", "Js", "Lib",
-            "Updates", "Blog", "Services", "About", "Contact"
+            "Updates", "Blog", "Services", "About", "Contact", "Privacy", "Error", "Search", "Sitemap"
         };
 
         public AdminBlogController(BlogPostRepository blogPostRepository, ImageUploadService imageUploadService, CategoryRepository categoryRepository)

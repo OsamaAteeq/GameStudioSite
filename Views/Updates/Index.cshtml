@@ -2,8 +2,9 @@
 @{
     ViewData["Title"] = "Updates";
     ViewData["HeroText"] = "Updates";
-    ViewData["HeroImage"] = "/images/header-blog.jpg";
+    ViewData["HeroImage"] = "~/images/header-blog.jpg";
     ViewData["Gradient"] = "gradient-trans-blue";
+    ViewData["Description"] = "Read the latest updates from JZB4 Studios: game releases, development news, and more.";
 }
 <div class="light-background" id="updates-content">
 <div class="filter-bar">
@@ -59,114 +60,13 @@
     }
 </div>
 
-@if (Model.TotalPages > 1)
-{
-    <div class="pagination">
+    @{
+        Func<int, string> pageUrl = p => Url.Action("Index", "Updates",
+        new { page = p, category = Model.SelectedCategory },
+        protocol: null, host: null, fragment: "updates-content")!;
+    }
+    <partial name="_Pagination"
+             model="new GameStudioSite.Models.PaginationModel { CurrentPage = Model.CurrentPage, TotalPages = Model.TotalPages, PageUrl = pageUrl }" />
 
-        @if (Model.CurrentPage > 1)
-        {
-            <a asp-action="Index"
-               asp-route-page="@(Model.CurrentPage - 1)"
-               asp-route-category="@Model.SelectedCategory"
-               asp-fragment="updates-content"
-            class="side">
-                &lt;
-            </a>
-        }
-
-        <div class="pagination-pages">
-
-            @if (Model.CurrentPage > 3)
-            {
-                <a asp-action="Index"
-                   asp-route-page="1"
-                   asp-route-category="@Model.SelectedCategory"
-                   asp-fragment="updates-content">
-                    1
-                </a>
-
-                <span class="pagination-dots">...</span>
-            }
-
-            @{
-                int startPage = Math.Max(1, Model.CurrentPage - 2);
-                int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
-            }
-
-            @for (int i = startPage; i <= endPage; i++)
-            {
-                <a asp-action="Index"
-                   asp-route-page="@i"
-                   asp-route-category="@Model.SelectedCategory"
-                   asp-fragment="updates-content"
-                   class="@(i == Model.CurrentPage ? "active" : "")">
-                    @i
-                </a>
-            }
-
-            @if (Model.CurrentPage < Model.TotalPages - 2)
-            {
-                <span class="pagination-dots">...</span>
-
-                <a asp-action="Index"
-                   asp-route-page="@Model.TotalPages"
-                   asp-route-category="@Model.SelectedCategory"
-                   asp-fragment="updates-content">
-                    @Model.TotalPages
-                </a>
-            }
-
-        </div>
-
-        @if (Model.CurrentPage < Model.TotalPages)
-        {
-            <a asp-action="Index"
-               asp-route-page="@(Model.CurrentPage + 1)"
-               asp-route-category="@Model.SelectedCategory"
-			    asp-fragment="updates-content"
-               class="side">
-                &gt;
-            </a>
-        }
-
-    </div>
-}
 </div>
 <div class="gradient-blue-actual-black"></div>
-<script>
-    function centerActivePage() {
-        const pagination = document.querySelector(".pagination-pages");
-        const activePage = pagination.querySelector(".active")
-
-        if (!pagination || !activePage) return;
-        if (pagination.scrollWidth <= pagination.clientWidth) return;
-
-    const paginationRect = pagination.getBoundingClientRect();
-    const activeRect = activePage.getBoundingClientRect();
-
-    const distanceFromParentLeft =
-        activeRect.left - paginationRect.left;
-
-    const target =
-    distanceFromParentLeft -
-    (paginationRect.width / 2) +
-    (activeRect.width / 2);
-
-            pagination.scrollTo({
-            left: pagination.scrollLeft + target,
-            behavior: 'instant'});
-        
-    }
-
-    let resizeTimeout;
-
-    window.addEventListener("resize", function () {
-        clearTimeout(resizeTimeout);
-
-        resizeTimeout = setTimeout(() => {
-            centerActivePage();
-        }, 50);
-    });
-
-    document.addEventListener("DOMContentLoaded", centerActivePage);
-</script>

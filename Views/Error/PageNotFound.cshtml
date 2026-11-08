@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Page not found";
+    ViewData["Description"] = "This page doesn't exist. Search our games and updates, or head back home.";
+    ViewData["Heroless"] = true;
+}
+<section class="error-page">
+    <div class="dark-background" style="min-height:90vh; align-content:center;">
+        <div class="vertical-content" style="text-align:center;">
+            <h1 style="margin: 0;">404</h1>
+            <h2 style="white-space:normal; margin-top:1rem;">Page not&nbsp;found</h2>
+            <p>We couldn't find that page. It may have moved, or the address may have a typo. Try a search:</p>
+
+            <form action="/Search#main" method="get" class="search-form" role="search">
+                <label for="q" class="visually-hidden">Search games and updates</label>
+                <input id="q" name="q" type="search" maxlength="100" placeholder="Search games and updates" required />
+                <button class="btn" type="submit">Search</button>
+            </form>
+
+            <p class="error-links">
+                <a href="/">Home</a> · <a href="/Games">Games</a> · <a href="/Services">Services</a> · <a href="/About">About</a> · <a href="/Updates">Updates</a> · <a href="/Contact">Contact</a>
+            </p>
+        </div>
+    </div>
+    <div class="gradient-black-trans"></div>
+</section>

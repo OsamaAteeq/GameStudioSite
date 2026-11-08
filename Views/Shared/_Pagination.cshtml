@@ -1,0 +1,75 @@
+﻿@model GameStudioSite.Models.PaginationModel
+@if (Model.TotalPages > 1)
+{
+    int pagesCount = 2;
+    int startPage = Math.Max(1, Model.CurrentPage - pagesCount);
+    int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + pagesCount);
+
+    <div class="pagination">
+        @if (Model.CurrentPage > 1)
+        {
+            <a href="@Model.PageUrl(Model.CurrentPage - 1)" class="side" aria-label="Previous page">&lt;</a>
+        }
+
+        <div class="pagination-pages">
+            @if (startPage > 2)
+            {
+                <a href="@Model.PageUrl(1)">1</a>
+                <span class="pagination-dots">...</span>
+            }
+            else if (startPage == 2)
+            {
+                <a href="@Model.PageUrl(1)">1</a>
+            }
+
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <a href="@Model.PageUrl(i)"
+                   class="@(i == Model.CurrentPage ? "active" : "")"
+                   aria-current="@(i == Model.CurrentPage ? "page" : null)">@i</a>
+            }
+            @if (endPage == Model.TotalPages){}
+
+            else if (endPage == Model.TotalPages - 1)
+            {
+                <a href="@Model.PageUrl(Model.TotalPages)">@Model.TotalPages</a>
+            }
+            else
+            {
+                <span class="pagination-dots">...</span>
+                <a href="@Model.PageUrl(Model.TotalPages)">@Model.TotalPages</a>
+            }
+        </div>
+
+        @if (Model.CurrentPage < Model.TotalPages)
+        {
+            <a href="@Model.PageUrl(Model.CurrentPage + 1)" class="side" aria-label="Next page">&gt;</a>
+        }
+    </div>
+
+    <script>
+        (function () {
+            function centerActivePage() {
+                const pagination = document.querySelector(".pagination-pages");
+                if (!pagination) return;
+                const activePage = pagination.querySelector(".active");
+                if (!activePage) return;
+                if (pagination.scrollWidth <= pagination.clientWidth) return;
+
+                const paginationRect = pagination.getBoundingClientRect();
+                const activeRect = activePage.getBoundingClientRect();
+                const target = (activeRect.left - paginationRect.left)
+                    - (paginationRect.width / 2) + (activeRect.width / 2);
+
+                pagination.scrollTo({ left: pagination.scrollLeft + target, behavior: 'instant' });
+            }
+
+            let resizeTimeout;
+            window.addEventListener("resize", function () {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(centerActivePage, 50);
+            });
+            document.addEventListener("DOMContentLoaded", centerActivePage);
+        })();
+    </script>
+}

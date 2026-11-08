@@ -1,0 +1,72 @@
+﻿@model GameStudioSite.Controllers.SearchViewModel
+@{
+    ViewData["Title"] = "Search";
+    ViewData["Gradient"] = "gradient-trans-blue";
+    ViewData["Heroless"] = true;
+}
+<section class="error-page">
+    <div class="light-background" style="min-height:90vh">
+        <div class="vertical-content" style="text-align:center;">
+            <h1 style="margin:0;">Search</h1>
+            <form action="/Search#main" method="get" class="search-form" role="search">
+                <label for="q" class="visually-hidden">Search games and updates</label>
+                <input id="q" name="q" type="search" maxlength="100" value="@Model.Query" placeholder="Search games and updates" required />
+                <button class="btn" type="submit">Search</button>
+            </form>
+        </div>
+            @if (Model.Searched)
+            {
+            if (!Model.Results.Any())
+            {
+                <p>No matches for "@Model.Query".</p>
+            }
+            else
+            {
+                <div class="update-list-grid">
+                    @foreach (var r in Model.Results)
+                    {
+                        var hasImage = !string.IsNullOrEmpty(r.ImageUrl);
+                        var img = hasImage ? r.ImageUrl : "/images/JZB4-small-logo.png";
+
+                        <a class="update-list-card" href="@r.Url"
+                        target="@(r.External ? "_blank" : null)"
+                        rel="@(r.External ? "noopener noreferrer" : null)">
+                            <div class="update-list-card-image">
+                                <img src="@img" alt="@(hasImage ? r.ImageAlt : "")" class="@(hasImage ? null : "placeholder")" loading="lazy" />
+                            </div>
+                            <div class="update-list-card-content">
+                            <h4>@r.Title</h4>
+                                <div class="update-list-card-info">
+                                    @if (r.Tags.Any())
+                                    {
+                                        <p class="left">
+                                            @foreach (var tag in r.Tags)
+                                            {
+                                                <span>@tag</span>
+                                            }
+                                        </p>
+                                    }
+                                    <div class="right">
+                                        <span class="post-category">@r.Label</span>
+                                        @if (r.Host != null) { <span>@r.Host</span> }
+                                        @if (r.Date != null) { <span>@r.Date.Value.ToString("M"), @r.Date.Value.ToString("yyyy")</span> }
+                                    </div>
+                                </div>
+                                <p>@r.Description</p>
+                            </div>
+                        </a>
+                    }
+                </div>
+
+        
+            Func<int, string> pageUrl = p => Url.Action("Index", "Search",
+                new { q = Model.Query, page = p },
+                protocol: null, host: null, fragment: "main")!;
+        <partial name="_Pagination"
+                 model="new GameStudioSite.Models.PaginationModel { CurrentPage = Model.Page, TotalPages = Model.TotalPages, PageUrl = pageUrl }" />
+    }
+}
+        
+    </div>
+    <div class="gradient-blue-trans"></div>
+</section>

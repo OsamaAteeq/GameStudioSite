@@ -77,6 +77,21 @@ namespace GameStudioSite.Controllers
             return await CheckExternalUrlAsync(uri);
         }
 
+        private string NormalizeGameUrl(string url)
+        {
+            // External links stay exactly as entered
+            if (!url.StartsWith("/") || url.StartsWith("//")) return url;
+
+            var segments = url.Split('?', '#')[0].Trim('/').Split('/');
+            if (segments.Length != 2) return url;
+
+            var post = _blogPostRepository.GetByCategoryAndSlug(
+                Uri.UnescapeDataString(segments[0]),
+                Uri.UnescapeDataString(segments[1]));
+
+            return post?.Url ?? url;
+        }
+
         private async Task<string?> CheckExternalUrlAsync(Uri initialUri)
         {
             var client = _httpClientFactory.CreateClient("GameUrlValidation");
@@ -238,6 +253,7 @@ namespace GameStudioSite.Controllers
             {
                 return View(form);
             }
+            form.GameUrl = NormalizeGameUrl(form.GameUrl!);
 
             string? imageUrl;
             try
@@ -331,6 +347,7 @@ namespace GameStudioSite.Controllers
                 return View(form);
             }
 
+            form.GameUrl = NormalizeGameUrl(form.GameUrl!);
             var imageUrl = form.ExistingImageUrl;
 
             if (form.ImageFile != null)

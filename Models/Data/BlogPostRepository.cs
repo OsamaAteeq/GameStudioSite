@@ -1,5 +1,7 @@
 ﻿using GameStudioSite.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Text.RegularExpressions;
 
 namespace GameStudioSite.Data
 {
@@ -13,6 +15,9 @@ namespace GameStudioSite.Data
             _posts = context.BlogPosts;
             _categoryRepository = categoryRepository;
         }
+
+        public List<BlogPost> GetAllExcluding(IEnumerable<string> excludedCategories) =>
+    _posts.Find(Builders<BlogPost>.Filter.Nin(p => p.Category, excludedCategories)).ToList();
 
         public (List<BlogPost> Posts, int TotalCount) GetPage(int page, int pageSize, string? category = null)
         {

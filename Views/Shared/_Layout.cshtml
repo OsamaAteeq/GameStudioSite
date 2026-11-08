@@ -4,21 +4,46 @@
     @inject IConfiguration Config
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @{
+        var siteUrl = Config["Site:BaseUrl"]!.TrimEnd('/');
+        var desc = ViewData["Description"]?.ToString()
+        ?? "JZB4 Studios is a group of game developers and designers making our own games and helping others turn their ideas into reality.";
+        var ogImage = ViewData["OgImage"]?.ToString() ?? "/images/JZB4-Logo-Large.png";
+        var ogType = ViewData["OgType"]?.ToString() ?? "website";
+        var ogUrl = $"{siteUrl}{Context.Request.Path}";
+        var pageTitle = string.IsNullOrEmpty(ViewData["Title"]?.ToString())
+                        ? "JZB4 Studios"
+                        : $"{ViewData["Title"]} - JZB4 Studios";
+
+        desc = System.Text.RegularExpressions.Regex.Replace(desc, @"\s+", " ").Trim();
+        if (desc.Length > 160)
+        {
+            var cut = desc.LastIndexOf(' ', 157);
+            desc = desc[..(cut > 100 ? cut : 157)].TrimEnd(',', '.', ';', ':', ' ') + "…";
+        }
+    }
     <title>
-        @(string.IsNullOrEmpty(ViewData["Title"]?.ToString())
-                ? "JZB4 Studios"
-                : $"JZB4 Studios - {ViewData["Title"]}")
+        @pageTitle
     </title>
 
     <link rel="icon" type="image/ico" href="~/favicon.ico">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Zen+Dots&display=swap" rel="stylesheet">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     
     <link rel="canonical" href="@($"{Config["Site:BaseUrl"]!.TrimEnd('/')}{Context.Request.Path}")" />
+
+    
+    <meta name="description" content="@desc" />
+    <meta property="og:site_name" content="JZB4 Studios" />
+    <meta property="og:type" content="@ogType" />
+    <meta property="og:title" content="@pageTitle" />
+    <meta property="og:description" content="@desc" />
+    <meta property="og:url" content="@ogUrl" />
+    <meta property="og:image" content="@(ogImage.StartsWith("http") ? ogImage : siteUrl + ogImage)" />
+    <meta name="twitter:card" content="summary_large_image" />
+
     @RenderSection("Head", required: false)
    
 </head>
@@ -54,11 +79,15 @@
             };
         }
 
+    <a class="skip-link" href="#main">Skip to content</a>
     <div class="@(ViewData["Heroless"] as bool? == true ? "" : ViewData["FixedHero"] as bool? == true ? "hero" : "hero-small")">
-        <header class="site-header">
-            <a class="logo" asp-controller="Home" asp-action="Index">
-                <img src="~/images/JZB4-Logo-512-Rounded.png" alt="JZB4 rounded logo" />
+        <header class="site-header" aria-label="Header">
+            <a class="logo" asp-controller="Home" asp-action="Index" aria-label="jzb4.com">
+                <img src="~/images/JZB4-Logo-512-Rounded.png"/>
             </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+                ☰
+            </button>
             <nav class="site-nav">
                 <a class="@((controller, action) == ("Home", "Games") ? "active" : "")" asp-controller="Home" asp-action="Games">Games</a>
                 <a class="@((controller, action) == ("Home", "Services") ? "active" : "")" asp-controller="Home" asp-action="Services">Services</a>
@@ -66,17 +95,18 @@
                 <a class="@((controller, action) == ("Updates", "Index") ? "active" : "")" asp-controller="Updates" asp-action="Index">Updates</a>
                 <a class="@((controller, action) == ("Contact", "Index") ? "active" : "")" asp-controller="Contact" asp-action="Index">Contact</a>
             </nav>
-            <button class="menu-toggle" id="menuToggle">
-                ☰
-            </button>
         </header>
         
 
         @{
-            if (controller == "Home" || action == "Index")
+            if (ViewData["Heroless"] as bool? == true)
+            {
+
+            }
+            else if (controller == "Home" || action == "Index")
             {
                 <div class="hero-background">
-                    <img src="@Url.Content(headerImage)" alt="Header Image" class="@(ViewData["FixedHero"] as bool? == true ? "hero-background-moving" : "hero-background-fixed")" />
+                    <img src="@Url.Content(headerImage)" class="@(ViewData["FixedHero"] as bool? == true ? "hero-background-moving" : "hero-background-fixed")" />
                 </div>
                 
             }
@@ -84,7 +114,7 @@
             if (controller == "Home" && action == "Index")
             {
                 <div class="hero-content">
-                    <img src="\images\cropped-JZB4-Logo-blue-text-512x512.png.png" alt="JZB4 full logo" />
+                    <img src="~/images/cropped-JZB4-Logo-blue-text-512x512.png" alt="JZB4 full logo" />
                     <h1 class="slogan">@ViewData["HeroText"]</h1>
                 </div>
             }
@@ -112,13 +142,13 @@
         </div>
         }
     </div>
-    <main class="main-content">
+    <main class="main-content" id="main">
         @RenderBody()
     </main>
     <footer class="site-footer">
 
          <a asp-controller="Home" asp-action="Index" class="logo">
-            <img src="\images\cropped-JZB4-Logo-blue-text-512x512.png.png" alt="JZB4 Studios">
+            <img src="~/images/cropped-JZB4-Logo-blue-text-512x512.png" alt="JZB4 full logo">
             </a>
 
         <hr class="footer-divider">
@@ -153,7 +183,7 @@
                 <i class="fa-brands fa-instagram"></i>
             </a>
 
-            <a href="https://twitter.com/JZB4Studios"
+            <a href="https://x.com/JZB4Studios"
                target="_blank"
                rel="noopener noreferrer"
                aria-label="X">
@@ -171,8 +201,13 @@
         <hr class="footer-divider">
         <div class="footer-bottom">
             &copy; @DateTime.Now.Year JZB4 Studios. All rights reserved.
-        </div>
 
+            <div class="footer-legal">
+                JZB4&nbsp;Studios · Osama&nbsp;Ateeq,&nbsp;sole&nbsp;trader · Lilla&nbsp;Regementsvägen&nbsp;10 415&nbsp;27&nbsp;Gothenburg,&nbsp;Sweden ·
+                <a href="mailto:contact@jzb4.com">contact@jzb4.com</a> · <a href="/Privacy">Privacy&nbsp;Policy</a>
+            </div>
+        </div>
+        
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -182,9 +217,17 @@
     <script>
         const menuToggle = document.getElementById("menuToggle");
         const nav = document.querySelector(".site-header nav");
+        menuToggle.setAttribute("aria-expanded", "false");
+        menuToggle.setAttribute("aria-controls", nav.id);
 
         menuToggle.addEventListener("click", () => {
-            nav.classList.toggle("active");
+            const isOpen = nav.classList.toggle("active");
+            menuToggle.setAttribute("aria-expanded", isOpen);
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("@ViewData["ScrollTo"]")
+                ?.scrollIntoView({ behavior: "smooth" });
         });
     </script>
 

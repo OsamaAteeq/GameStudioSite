@@ -33,7 +33,7 @@ namespace GameStudioSite.Controllers
                 urls.Add(url);
             }
 
-            foreach (var path in new[] { "/", "/Games", "/Services", "/About", "/Updates", "/Contact" })
+            foreach (var path in new[] { "/", "/Games", "/Services", "/About", "/Updates", "/Contact", "Privacy" })
                 Add(path);
 
             var posts = _posts.GetAllForAdmin()

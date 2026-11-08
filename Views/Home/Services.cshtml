@@ -2,13 +2,23 @@
 @{
     ViewData["Title"] = "Services";
     ViewData["HeroText"] = "Services";
-    ViewData["HeroImage"] = "/images/header-services.jpg";
+    ViewData["HeroImage"] = "~/images/header-services.jpg";
+	ViewData["Description"] = "Game development, design, art, consultation and more. Tell us your idea and we’ll shape the team around it.";
 
     string contactFormID = "contact-form";
 }
 @{
     int switchIndex = Model.Count/2;
     <div class="gradient-black-blue" style="height:auto">
+        <div class="transparent-background">
+            <h2>How we work</h2>
+            <p>Every project is different, so we shape the team around the idea. Share your vision with us, and we'll work out the approach together, bringing in the right people for the challenge.</p>
+            <ol>
+                <li><strong>Share your vision.</strong> Tell us about your idea, platform and timeline. A rough description is enough.</li>
+                <li><strong>Shape the plan.</strong> We reply with how we'd approach it and who we'd involve.</li>
+                <li><strong>Build it together.</strong> You work with us directly, and we keep you in the loop along the way.</li>
+            </ol>
+        </div>
         @for (int i = 0; i < switchIndex; i++)
         {
             var service = Model[i];

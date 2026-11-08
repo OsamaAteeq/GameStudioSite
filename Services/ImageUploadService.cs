@@ -57,7 +57,7 @@
                 await file.CopyToAsync(stream);
             }
 
-            return $"/images/{subfolder}/{uniqueFileName}";
+            return $"~/images/{subfolder}/{uniqueFileName}";
         }
     }
 }

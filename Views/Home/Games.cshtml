@@ -2,7 +2,9 @@
 @{
     ViewData["Title"] = "Games";
     ViewData["HeroText"] = "Our Games";
-    ViewData["HeroImage"] = "/images/header-games.jpg";
+    ViewData["HeroImage"] = "~/images/header-games.jpg";
+    ViewData["Description"] = "Play the games from JZB4 Studios: online multiplayer, racing, shooters, platformers and more. Made by our team.";
+
     string contactFormID = "contact-form";
 }
 @{
@@ -82,7 +84,7 @@
         gradientClass = "gradient-blue-trans";
     }
     <div class="image-background">
-        <img src="/images/CtaImage.png" alt="Call to Action Background" />
+        <img src="~/images/CtaImage.png"/>
         <div class="@gradientClass">
         </div>
         <div class="transparent-background">
