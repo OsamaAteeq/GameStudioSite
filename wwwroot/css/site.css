@@ -956,6 +956,11 @@ input, textarea {
     margin-bottom: 1.25rem;
 }
 
+.inline-form {
+    flex-direction: row;
+    display: inline-flex;
+}
+
     .form-group label {
         display: block;
         font-weight: 600;

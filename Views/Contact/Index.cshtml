@@ -88,7 +88,13 @@
                         <textarea asp-for="Message" class="form-control" rows="6"></textarea>
                         <span asp-validation-for="Message" class="field-validation-error"></span>
                     </div>
-                    <p class="form-note">By sending this form you agree that we use your details to reply. See our <a href="/Privacy">Privacy Policy</a>.</p>
+                    <div class="form-group">
+                        <div class="inline-form">
+                            <input asp-for="AgreeToPrivacyPolicy" type="checkbox" style="align-self: flex-start;" />
+                            <label asp-for="AgreeToPrivacyPolicy">I have read the <a href="/Privacy" target="_blank" rel="noopener">Privacy Policy</a> and understand how my details are used to reply to me.</label>
+                        </div>
+                        <span asp-validation-for="AgreeToPrivacyPolicy" class="field-validation-error"></span>
+                    </div>
                     <div class="form-group">
                         <div class="turnstile-container">
                             <div class="turnstile-decorator">
@@ -158,6 +164,10 @@
     <script>
         $.validator.setDefaults({ ignore: [] });
 
+            $.validator.addMethod("mustbetrue", function (value, element) {
+            return element.checked;
+        });
+        $.validator.unobtrusive.adapters.addBool("mustbetrue");
         document.querySelector('#mapBox .map-load').addEventListener('click', () => {
             const box = document.getElementById('mapBox');
             const f = document.createElement('iframe');

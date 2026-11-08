@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GameStudioSite.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace GameStudioSite.Models
 {
@@ -22,6 +23,9 @@ namespace GameStudioSite.Models
         [Required(ErrorMessage = "Please enter a message.")]
         [StringLength(2000, MinimumLength = 10, ErrorMessage = "Message should be at least 10 characters.")]
         public string Message { get; set; } = "";
+
+        [MustBeTrue(ErrorMessage = "You must agree to the Privacy Policy.")]
+        public bool AgreeToPrivacyPolicy { get; set; }
 
         public string FullName => $"{FirstName} {LastName}".Trim();
 
