@@ -60,7 +60,7 @@
 
     <div class="form-group">
         <label asp-for="Form.ImageFile">Featured Image</label>
-        <input asp-for="Form.ImageFile" type="file" accept="image/*" class="form-control" />
+        <input asp-for="Form.ImageFile" type="file" accept=".jpg,.jpeg,.png,.webp" class="form-control" />
         <span asp-validation-for="Form.ImageFile" class="field-validation-error"></span>
     </div>
 
