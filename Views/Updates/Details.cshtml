@@ -125,6 +125,9 @@
                 '<span class="embed-facade-play">&#9654;</span>' +
                 '<span class="embed-facade-label">Click to play</span>';
 
+            const gameName = document.querySelector('h1')?.textContent.trim();
+
+            facade.setAttribute('aria-label', gameName ? `Play ${gameName}` : 'Play game');
             facade.addEventListener('click', function () {
                 frame.src = src;
                 frame.removeAttribute('data-src');
