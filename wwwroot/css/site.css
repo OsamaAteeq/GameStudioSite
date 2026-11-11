@@ -348,7 +348,7 @@ input, textarea {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 0.5rem 1rem;
+    gap: 0.5rem 1.6rem;
     font-size: 1.8rem;
 }
 
@@ -379,6 +379,17 @@ input, textarea {
     .footer-socials a:hover i {
         color: var(--color-accent-cyan);
     }
+
+.footer-socials svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    display: block;
+}
+
+.footer-socials a[aria-label="Facebook"] svg {
+    width: auto;
+    height: 1.6rem;
+}
 
 .site-footer .logo img {
     height: clamp(5rem, 8vw, 10rem);
