@@ -7,6 +7,8 @@ COPY GameStudioSite.csproj ./
 RUN dotnet restore
 
 COPY . .
+ARG SIXLABORS_LICENSE_KEY
+ENV SIXLABORS_LICENSE_KEY=$SIXLABORS_LICENSE_KEY
 RUN dotnet publish GameStudioSite.csproj -c Release -o /app/publish --no-restore /p:UseAppHost=false
 
 # ---- runtime stage ----
