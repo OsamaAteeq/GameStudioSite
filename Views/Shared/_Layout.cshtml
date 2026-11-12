@@ -82,8 +82,8 @@
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="@(ViewData["Heroless"] as bool? == true ? "" : ViewData["FixedHero"] as bool? == true ? "hero" : "hero-small")">
         <header class="site-header" aria-label="Header">
-            <a class="logo" asp-controller="Home" asp-action="Index" aria-label="jzb4.com">
-                <img src="~/images/JZB4-Logo-512-Rounded.png"/>
+            <a class="logo" asp-controller="Home" asp-action="Index" aria-label="JZB4 Studios home">
+                <img src="~/images/JZB4-Logo-256-Rounded.png" alt="" width="256" height="256" />
             </a>
             <button class="menu-toggle" id="menuToggle" aria-label="Menu">
                 ☰
@@ -114,7 +114,8 @@
             if (controller == "Home" && action == "Index")
             {
                 <div class="hero-content">
-                    <img src="~/images/cropped-JZB4-Logo-blue-text-512x512.png" alt="JZB4 full logo" />
+                    <img src="~/images/cropped-JZB4-Logo-blue-text-512x512.png" alt="JZB4 full logo"
+                         width="512" height="239" fetchpriority="high" />
                     <h1 class="slogan">@ViewData["HeroText"]</h1>
                 </div>
             }
