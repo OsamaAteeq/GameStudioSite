@@ -28,7 +28,10 @@
     {
             <a class="update-list-card" href="@update.Url">
                 <div class="update-list-card-image">
-                    <img src="@update.FeaturedImageUrl" alt="@update.ImageAltText" />
+                    <img src="@update.FeaturedImageUrl"
+                         srcset="@Images.GetSrcSet(update.FeaturedImageUrl)"
+                         sizes="(max-width: 992px) 94vw, 29vw"
+                         alt="@update.ImageAltText" loading="lazy" />
                 </div>
                 <div class="update-list-card-content">
                     <h4>

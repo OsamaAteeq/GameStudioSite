@@ -113,7 +113,10 @@
             {
                 <a class="update-card" href="@update.Url">
                     <div class="update-card-image">
-                        <img src="@update.FeaturedImageUrl" alt="@update.ImageAltText"/>
+                        <img src="@update.FeaturedImageUrl"
+                             srcset="@Images.GetSrcSet(update.FeaturedImageUrl)"
+                             sizes="(max-width: 768px) 94vw, 48vw"
+                             alt="@update.ImageAltText" loading="lazy" />
                     </div>
                     <div class="update-card-content">
                         <h4>
