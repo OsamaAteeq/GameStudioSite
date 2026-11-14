@@ -551,6 +551,7 @@ input, textarea {
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
     width: 100%;
+    min-height: 50vh;
 }
 .service-card {
     position: relative;
@@ -603,6 +604,7 @@ input, textarea {
     z-index: 1;
     padding: 2rem;
     height: 100%;
+    align-content: center;
 }
     .service-card-content h3 {
         margin: 0 0 0.75rem;
