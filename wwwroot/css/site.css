@@ -482,6 +482,7 @@ input, textarea {
     .horizontal-content img {
         width: 40%;
         border-radius: 8px;
+        height:auto;
         object-fit: cover;
     }
     .bright-contain img{
@@ -1701,7 +1702,6 @@ input, textarea {
 
         .horizontal-content img {
             width: 100%;
-            height: auto;
             max-height: 400px;
         }
         .image-first-mobile img {
