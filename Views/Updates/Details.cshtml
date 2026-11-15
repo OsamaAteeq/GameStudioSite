@@ -13,6 +13,13 @@
     ViewData["HeroImage"] = @Model.FeaturedImageUrl;
     ViewData["Heroless"] = true;
 }
+@if (!Model.ShowImage && (Model.ContentHtml?.Contains("embed-upload", StringComparison.OrdinalIgnoreCase) == true
+                         || Model.ContentHtml?.Contains(".itch.zone", StringComparison.OrdinalIgnoreCase) == true))
+{
+    @section Head {
+        <link rel="preload" as="image" href="@Model.FeaturedImageUrl" fetchpriority="high">
+    }
+}
 <div class="dark-background">
     <div class="vertical-content">
     @if (Model.ShowImage)
