@@ -11,7 +11,7 @@
     int switchIndex = Model.Count/2;
     <div class="gradient-black-blue" style="height:auto">
         <div class="transparent-background">
-            <h3>How we work</h3>
+            <h2 class="h3style">How we work</h2>
             <p>Every project is different, so we shape the team around the idea. Share your vision with us, and we'll work out the approach together, bringing in the right people for the challenge.</p>
             <ol>
                 <li><strong>Share your vision.</strong> Tell us about your idea, platform and timeline. A rough description is enough.</li>
@@ -28,7 +28,7 @@
                     @if (i % 2 == 0)
                     {
                         <div class="vertical-content">
-                            <h3 class="center-text">@service.Title</h3>
+                            <h2 class="center-text h3style">@service.Title</h2>
                             <p class="center-text"> @service.Description</p>
                             <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
                         </div>
@@ -47,7 +47,7 @@
                              height="@(size.Height > 0 ? size.Height : (int?)null)"
                              loading="lazy" />
                         <div class="vertical-content">
-                            <h3 class="center-text">@service.Title</h3>
+                            <h2 class="center-text h3style">@service.Title</h2>
                             <p class="center-text"> @service.Description</p>
                             <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
                         </div>
@@ -66,7 +66,7 @@
                     @if (i % 2 == 0)
                     {
                         <div class="vertical-content">
-                            <h3 class="center-text">@service.Title</h3>
+                            <h2 class="center-text h3style">@service.Title</h2>
                             <p class="center-text"> @service.Description</p>
                             <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
                         </div>
@@ -85,7 +85,7 @@
                              height="@(size.Height > 0 ? size.Height : (int?)null)"
                              loading="lazy" />
                         <div class="vertical-content">
-                            <h3 class="center-text">@service.Title</h3>
+                            <h2 class="center-text h3style">@service.Title</h2>
                             <p class="center-text"> @service.Description</p>
                             <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
                         </div>
