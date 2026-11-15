@@ -1203,7 +1203,22 @@ input, textarea {
     align-items: center;
     z-index: 1; /* lifts this row (and its submenu) above sibling li's when hovered/open */
 }
+.submenu-label {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    margin: -0.5rem -1rem; /* cancels the li padding so the span covers the whole row */
+}
 
+/* Lets the keyboard open the submenu on devices that normally show it only on hover */
+.has-submenu.submenu-open .submenu {
+    display: block;
+}
+
+.nested-select-options [role="menuitem"]:focus-visible {
+    outline: 2px solid var(--color-brand-blue);
+    outline-offset: -2px;
+    background: var(--color-lavender-light);
+}
 /* Post page CSS*/
 
 .post-page 

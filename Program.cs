@@ -165,6 +165,29 @@ app.UseHttpsRedirection();
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 app.UseStaticFiles();
+
+
+//Capitalized as canonical
+var canonicalPages = new[] { "/Games", "/Services", "/About", "/Updates", "/Contact", "/Privacy", "/Search" }
+    .ToDictionary(p => p, p => p, StringComparer.OrdinalIgnoreCase);
+
+app.Use(async (ctx, next) =>
+{
+    var path = ctx.Request.Path.Value ?? "";
+    var trimmed = path.Length > 1 ? path.TrimEnd('/') : path;
+
+    if (HttpMethods.IsGet(ctx.Request.Method)
+        && canonicalPages.TryGetValue(trimmed, out var canonical)
+        && path != canonical)
+    {
+        ctx.Response.Redirect(canonical + ctx.Request.QueryString, permanent: true);   // 301
+        return;
+    }
+
+    await next();
+});
+
+
 app.UseRouting();
 
 app.UseAuthentication();

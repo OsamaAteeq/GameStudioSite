@@ -54,29 +54,30 @@
                         <input asp-for="Email" class="form-control" />
                         <span asp-validation-for="Email" class="field-validation-error"></span>
                     </div>
-
                     <div class="form-group">
-                        <label>Subject</label>
+                        <label id="subject-label">Subject</label>
                         <div class="nested-select" id="subject-dropdown">
-                            <button type="button" class="nested-select-trigger" id="subject-trigger">
+                            <button type="button" class="nested-select-trigger" id="subject-trigger"
+                                    aria-haspopup="menu" aria-expanded="false" aria-controls="subject-options"
+                                    aria-labelledby="subject-label subject-trigger">
                                 @(string.IsNullOrEmpty(Model.Subject) ? "-- Select a subject --" : Model.Subject)
                             </button>
-                            <ul class="nested-select-options">
-                                <li class="has-submenu">
-                                    Services
-                                    <ul class="submenu">
+                            <ul class="nested-select-options" id="subject-options" role="menu" aria-labelledby="subject-label">
+                                <li class="has-submenu" role="none">
+                                    <span class="submenu-label" role="menuitem" aria-haspopup="menu" aria-expanded="false" tabindex="-1">Services</span>
+                                    <ul class="submenu" role="menu" aria-label="Services">
                                         @foreach (var service in ServiceSeedData.All)
                                         {
-                                            <li data-value="Services: @service.Title">@service.Title</li>
+                                            <li role="menuitem" tabindex="-1" data-value="Services: @service.Title">@service.Title</li>
                                         }
-                                        <li data-value="Services: Multiple / Not listed">Multiple / Not listed</li>
+                                        <li role="menuitem" tabindex="-1" data-value="Services: Multiple / Not listed">Multiple / Not listed</li>
                                     </ul>
                                 </li>
                                 @foreach (var subject in ContactFormModel.SubjectOptions)
                                 {
-                                    <li data-value="@subject">@subject</li>
+                                    <li role="menuitem" tabindex="-1" data-value="@subject">@subject</li>
                                 }
-                                <li data-value="Something else">Something else</li>
+                                <li role="menuitem" tabindex="-1" data-value="Something else">Something else</li>
                             </ul>
                         </div>
                         <input type="hidden" asp-for="Subject" id="subject-hidden-input" />
