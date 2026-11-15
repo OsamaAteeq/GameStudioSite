@@ -10,6 +10,14 @@ namespace GameStudioSite.Helpers
         private static readonly Regex SrcAttribute =
             new(@"\ssrc\s*=\s*([""'])(?<url>.*?)\1", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
+        private static readonly Regex TrailingEmptyParagraphs =
+    new(@"(\s*<p>(<br\s*/?>|\s|&nbsp;)*</p>)+\s*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static readonly Regex WidthAttr = new(@"\swidth\s*=\s*[""']?(?<v>\d+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex HeightAttr = new(@"\sheight\s*=\s*[""']?(?<v>\d+)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private static readonly Regex StyleAttr = new(@"\sstyle\s*=", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+
         // Turns <iframe src="..."> into <iframe data-facade="true" data-src="...">
         // for itch.io embeds, so the browser doesn't start loading the game.
         public static string Apply(string html)
@@ -37,12 +45,16 @@ namespace GameStudioSite.Helpers
                 tag = SrcAttribute.Replace(tag,
                     m => $" data-src={m.Groups[1].Value}{m.Groups["url"].Value}{m.Groups[1].Value}", 1);
 
+                
+                var w = WidthAttr.Match(tag);
+                var h = HeightAttr.Match(tag);
+                var ratio = (w.Success && h.Success) ? $"{w.Groups["v"].Value} / {h.Groups["v"].Value}" : "640 / 360";   // same defaults as the script
+                var style = StyleAttr.IsMatch(tag) ? "" : $" style=\"display:block;width:100%;height:auto;aspect-ratio:{ratio}\"";
+
                 // tag starts with "<iframe" (7 characters)
-                return "<iframe data-facade=\"true\"" + tag.Substring(7);
+                return "<iframe data-facade=\"true\"" + style + tag.Substring(7);
             });
         }
-        private static readonly Regex TrailingEmptyParagraphs =
-    new(@"(\s*<p>(<br\s*/?>|\s|&nbsp;)*</p>)+\s*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public static string TrimTrailingEmpty(string html)
         {

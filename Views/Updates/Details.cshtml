@@ -54,8 +54,10 @@
 <article class="post-page">
                 <div class="post-content">
                 @Html.Raw(GameStudioSite.Services.EmbedProcessor.Process(
-                GameStudioSite.Helpers.EmbedFacade.Apply(
-                GameStudioSite.Helpers.EmbedFacade.TrimTrailingEmpty(Model.ContentHtml))))
+                    GameStudioSite.Helpers.EmbedFacade.Apply(
+                        GameStudioSite.Helpers.EmbedFacade.TrimTrailingEmpty(Model.ContentHtml)
+                    ),
+                    firstImageEager: !Model.ShowImage))
                 </div>
 </article>
     @if (!Model.ShowImage)

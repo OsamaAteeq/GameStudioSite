@@ -4,7 +4,7 @@ namespace GameStudioSite.Services
 {
     public static class EmbedProcessor
     {
-        public static string Process(string? html)
+        public static string Process(string? html, bool firstImageEager = false)
         {
             if (string.IsNullOrWhiteSpace(html)) return html ?? "";
 
@@ -17,11 +17,28 @@ namespace GameStudioSite.Services
 
             if (images != null)
             {
+                var firstBlock = doc.DocumentNode.ChildNodes.FirstOrDefault(n =>
+                    n.NodeType == HtmlNodeType.Element || !string.IsNullOrWhiteSpace(n.InnerText));
+                var isFirst = true;
+
                 foreach (var img in images)
                 {
-                    if (!img.Attributes.Contains("loading")) img.SetAttributeValue("loading", "lazy");
+                    var eager = firstImageEager && isFirst;
+                    isFirst = false;
+
+                    if (eager)
+                    {
+                        // Opens the article with no hero above it: it can be the LCP element, so don't lazy-load it.
+                        if (firstBlock != null && (firstBlock == img || firstBlock.Descendants("img").Contains(img)))
+                            img.SetAttributeValue("fetchpriority", "high");
+                    }
+                    else if (!img.Attributes.Contains("loading"))
+                    {
+                        img.SetAttributeValue("loading", "lazy");
+                    }
+
                     if (!img.Attributes.Contains("decoding")) img.SetAttributeValue("decoding", "async");
-                    if (!img.Attributes.Contains("alt")) img.SetAttributeValue("alt", "");   // see the note below
+                    if (!img.Attributes.Contains("alt")) img.SetAttributeValue("alt", "");
                 }
             }
             if (iframes != null)
