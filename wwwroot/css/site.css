@@ -280,7 +280,7 @@ input, textarea {
 .btn {
     display: inline-block;
     background-color: var(--color-brand-blue);
-    color: var(--color-lavender-light);
+    color: var(--color-white);
     padding: 0.6rem 1.4rem;
     border-radius: 6px;
     font-weight: 600;
@@ -288,11 +288,15 @@ input, textarea {
     cursor: pointer;
     text-decoration: none;
 }
-
-    .btn:hover {
+    .btn:visited {
+        color: var(--color-white);
+    }
+    .btn:hover, .btn:active {
         background-color: var(--color-accent-cyan);
         color: var(--color-navy-black);
     }
+
+    
 
 /* Card grid (used by games/services) made by claude */
 .card-grid {
@@ -688,8 +692,10 @@ input, textarea {
 
 
 
-    .game-card-content h4 {
+    .game-card-content h3 {
         font-family: var(--font-heading);
+        font-size: clamp(1.2rem, 1.7vw, 1.7rem);
+        text-transform: uppercase;
         display: flex;
         flex-direction: column;
         margin: 0;
@@ -762,17 +768,19 @@ input, textarea {
     background: rgba(4, 201, 203, 0.08);
 }
 
-    .update-card-content h4 {
-        height: 3lh;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 3;
-        overflow: hidden;
-        text-transform: none;
-        font-family: var(--font-heading);
-        align-content: center;
-        margin-bottom: 0;
-    }
+.update-card-content h3 {
+    font-family: var(--font-heading);
+    font-size: clamp(1.2rem, 1.7vw, 1.7rem);
+    text-transform: uppercase;
+    height: 3lh;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-transform: none;
+    align-content: center;
+    margin-bottom: 0;
+}
     .update-card-content p {
         height: 3lh;
         display: -webkit-box;
@@ -1796,6 +1804,14 @@ input, textarea {
         
         font-size: clamp(0.8rem, 3vw, 1rem);
         line-height: 1.3;
+    }
+
+    .game-card-content h3 {
+        font-size: clamp(1rem, 4vw, 1.2rem);
+    }
+
+    .update-card-content h3 {
+        font-size: clamp(1rem, 4vw, 1.2rem);
     }
 
     .slogan {
