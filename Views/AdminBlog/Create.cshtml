@@ -289,14 +289,37 @@
             decorator.classList.toggle('quill-active', !!inside);
         }, true);
 
-        function insertImageByUrl() {
+                        function insertImageByUrl() {
             const url = prompt('Paste the image URL:');
             if (!url) return;
 
+            const alt = (prompt('Describe the image in a short sentence (for screen readers). Leave empty only if it is purely decorative:') || '').trim();
             const range = quill.getSelection(true);
-            quill.insertEmbed(range.index, 'image', url, 'user');
-            quill.setSelection(range.index + 1);
+
+            const probe = new Image();
+            const insert = (w, h) => {
+                quill.insertEmbed(range.index, 'image', url, 'user');
+                if (alt) quill.formatText(range.index, 1, 'alt', alt, 'user');
+                if (w && h) {
+                    quill.formatText(range.index, 1, 'width', String(w), 'user');
+                    quill.formatText(range.index, 1, 'height', String(h), 'user');
+                }
+                quill.setSelection(range.index + 1);
+            };
+            probe.onload = () => insert(probe.naturalWidth, probe.naturalHeight);
+            probe.onerror = () => insert(0, 0);   // can't read the size: insert without it, as before
+            probe.src = url;
         }
+
+                quill.root.addEventListener('dblclick', function (e) {
+            if (e.target.tagName !== 'IMG') return;
+            const blot = Quill.find(e.target);
+            if (!blot) return;
+            const current = e.target.getAttribute('alt') || '';
+            const alt = prompt('Alt text for this image:', current);
+            if (alt === null) return;   // cancelled
+            quill.formatText(quill.getIndex(blot), 1, 'alt', alt.trim(), 'user');
+        });
 
         // Accepts either a plain video URL (YouTube/Vimeo/direct file) or a raw embed
         // snippet copied from somewhere like itch.io's "Embed this game" page.
