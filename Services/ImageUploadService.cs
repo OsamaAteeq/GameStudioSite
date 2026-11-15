@@ -13,10 +13,13 @@ namespace GameStudioSite.Services
         private const int JpegQuality = 80;
         private static readonly int[] VariantWidths = { 640, 1280, 1920 };
         private const int VariantQuality = 78;
-        private static readonly ConcurrentDictionary<string, int> WidthCache = new();
+        private static readonly ConcurrentDictionary<string, (int Width, int Height)> SizeCache = new();
 
-        private static bool IsBlogJpeg(string url) =>
-            url.StartsWith("/images/blog/", StringComparison.OrdinalIgnoreCase)
+
+        private static readonly string[] VariantFolders = { "blog", "games" };
+
+        private static bool IsResponsiveJpeg(string url) =>
+            VariantFolders.Any(f => url.StartsWith($"/images/{f}/", StringComparison.OrdinalIgnoreCase))
             && url.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase);
 
         private static bool IsVariantName(string nameWithoutExtension) =>
@@ -33,13 +36,21 @@ namespace GameStudioSite.Services
             var fullPath = FullPath(webPath);
             if (File.Exists(fullPath)) File.Delete(fullPath);
         }
-
-        private int GetWidth(string imageUrl) =>
-            WidthCache.GetOrAdd(imageUrl, url =>
+        public (int Width, int Height) GetSize(string? imageUrl)
+        {
+            if (string.IsNullOrEmpty(imageUrl)) return (0, 0);
+            var key = "/" + imageUrl.TrimStart('~', '/');
+            if (SizeCache.TryGetValue(key, out var cached)) return cached;
+            try
             {
-                try { return Image.Identify(FullPath(url))?.Width ?? 0; }   // reads the header only
-                catch { return 0; }
-            });
+                var info = Image.Identify(FullPath(key));   // reads the header only
+                if (info == null) return (0, 0);
+                var size = (info.Width, info.Height);
+                SizeCache[key] = size;                      // failures are not cached
+                return size;
+            }
+            catch { return (0, 0); }
+        }
 
         private static async Task SaveVariantsAsync(Image image, string folder, string baseName)
         {
@@ -56,7 +67,7 @@ namespace GameStudioSite.Services
         // Returns a srcset value, or null (the attribute is then left out and src is used alone).
         public string? GetSrcSet(string? imageUrl)
         {
-            if (string.IsNullOrEmpty(imageUrl) || !IsBlogJpeg(imageUrl)) return null;
+            if (string.IsNullOrEmpty(imageUrl) || !IsResponsiveJpeg(imageUrl)) return null;
 
             var parts = new List<string>();
             foreach (var w in VariantWidths)
@@ -66,31 +77,34 @@ namespace GameStudioSite.Services
             }
             if (parts.Count == 0) return null;
 
-            var originalWidth = GetWidth(imageUrl);
+            var originalWidth = GetSize(imageUrl).Width;
             if (originalWidth > 0) parts.Add($"{imageUrl} {originalWidth}w");
             return string.Join(", ", parts);
         }
 
-        public async Task BackfillBlogVariantsAsync()
+        public async Task BackfillVariantsAsync()
         {
-            var folder = Path.Combine(_env.WebRootPath, "images", "blog");
-            if (!Directory.Exists(folder)) return;
-
-            foreach (var path in Directory.EnumerateFiles(folder, "*.jpg"))
+            foreach (var sub in VariantFolders)
             {
-                var name = Path.GetFileNameWithoutExtension(path);
-                if (IsVariantName(name)) continue;
-                try
-                {
-                    var info = await Image.IdentifyAsync(path);
-                    if (info == null) continue;
-                    var missing = VariantWidths.Any(w => info.Width > w && !File.Exists(Path.Combine(folder, $"{name}-{w}.jpg")));
-                    if (!missing) continue;
+                var folder = Path.Combine(_env.WebRootPath, "images", sub);
+                if (!Directory.Exists(folder)) continue;
 
-                    using var image = await Image.LoadAsync(path);
-                    await SaveVariantsAsync(image, folder, name);
+                foreach (var path in Directory.EnumerateFiles(folder, "*.jpg"))
+                {
+                    var name = Path.GetFileNameWithoutExtension(path);
+                    if (IsVariantName(name)) continue;
+                    try
+                    {
+                        var info = await Image.IdentifyAsync(path);
+                        if (info == null) continue;
+                        var missing = VariantWidths.Any(w => info.Width > w && !File.Exists(Path.Combine(folder, $"{name}-{w}.jpg")));
+                        if (!missing) continue;
+
+                        using var image = await Image.LoadAsync(path);
+                        await SaveVariantsAsync(image, folder, name);
+                    }
+                    catch (Exception) { /* skip unreadable files */ }
                 }
-                catch (Exception) { /* skip unreadable files */ }
             }
         }
         // Longest side in pixels per upload folder. Smaller images are never enlarged.
@@ -112,10 +126,10 @@ namespace GameStudioSite.Services
 
             var normalized = "/" + imageUrl.TrimStart('~', '/');   // handles both "~/images/..." and "/images/..."
             DeleteFile(normalized);
-            if (IsBlogJpeg(normalized))
+            if (IsResponsiveJpeg(normalized))
             {
                 foreach (var w in VariantWidths) DeleteFile(VariantUrl(normalized, w));
-                WidthCache.TryRemove(normalized, out _);
+                SizeCache.TryRemove(normalized, out _);
             }
         }
 
@@ -190,7 +204,7 @@ namespace GameStudioSite.Services
                 var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                 await image.SaveAsJpegAsync(filePath, new JpegEncoder { Quality = JpegQuality });
-                if (subfolder.Equals("blog", StringComparison.OrdinalIgnoreCase))
+                if (VariantFolders.Contains(subfolder, StringComparer.OrdinalIgnoreCase))
                     await SaveVariantsAsync(image, uploadsFolder, Path.GetFileNameWithoutExtension(uniqueFileName));
                 return $"/images/{subfolder}/{uniqueFileName}";
             }

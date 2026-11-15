@@ -148,7 +148,7 @@ using (var scope = app.Services.CreateScope())
 
 using (var scope = app.Services.CreateScope())
 {
-    await scope.ServiceProvider.GetRequiredService<ImageUploadService>().BackfillBlogVariantsAsync();
+    await scope.ServiceProvider.GetRequiredService<ImageUploadService>().BackfillVariantsAsync();
 }
 
 // Configure the HTTP request pipeline.

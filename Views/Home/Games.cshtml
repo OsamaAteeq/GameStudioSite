@@ -21,6 +21,9 @@
     for (int i = 0; i < Model.Count; i++)
     {
         var game = Model[i];
+        var size = Images.GetSize(game.ImageUrl);
+        var srcset = Images.GetSrcSet(game.ImageUrl);
+
         if (i % 2 != 0)
         {
             divClass = "light-background";
@@ -48,12 +51,22 @@
                             <a class="btn" href="@game.GameUrl" target="_blank" rel="noopener">Play Now</a>
                         }
                     </div>
-                    <img src="@game.ImageUrl" alt="@game.Title" />
+                    <img src="@game.ImageUrl"
+                         srcset="@srcset"
+                         sizes="(max-width: 768px) 100vw, 45vw"
+                         width="@(size.Width > 0 ? size.Width : (int?)null)"
+                         height="@(size.Height > 0 ? size.Height : (int?)null)"
+                         alt="@game.Title" loading="lazy" />
                 }
                 else
                 {
 
-                    <img src="@game.ImageUrl" alt="@game.Title" />
+                    <img src="@game.ImageUrl"
+                         srcset="@srcset"
+                         sizes="(max-width: 768px) 100vw, 45vw"
+                         width="@(size.Width > 0 ? size.Width : (int?)null)"
+                         height="@(size.Height > 0 ? size.Height : (int?)null)"
+                         alt="@game.Title" loading="lazy" />
                     <div class="vertical-content">
                         <h3 class="center-text">@game.Title</h3>
                         <p class="center-text"> @game.Description</p>

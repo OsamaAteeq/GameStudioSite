@@ -23,10 +23,8 @@
                 {
                     @if (game.GameUrl.StartsWith("/"))
                     {
-                        <a class="game-card"
-                           href="@game.GameUrl"
-                           style="--card-image: url('@game.ImageUrl');">
-
+                        <a class="game-card" href="@game.GameUrl">
+                            <img class="game-card-image" src="@game.ImageUrl" alt="" loading="lazy" />
                             <div class="game-card-content">
                                 <h3>
                                     @game.Title
@@ -40,13 +38,12 @@
                         <a class="game-card"
                            asp-controller="Home"
                            asp-action="Games"
-                           asp-fragment="@game.Slug"
-                           style="--card-image: url('@game.ImageUrl');">
-
+                           asp-fragment="@game.Slug">
+                            <img class="game-card-image" src="@game.ImageUrl" alt="" loading="lazy" />
                             <div class="game-card-content">
-                                <h4>
+                                <h3>
                                     @game.Title
-                                </h4>
+                                </h3>
                             </div>
 
                         </a>

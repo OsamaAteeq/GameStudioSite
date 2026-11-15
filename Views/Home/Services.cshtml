@@ -22,6 +22,7 @@
         @for (int i = 0; i < switchIndex; i++)
         {
             var service = Model[i];
+			var size = Images.GetSize(service.PicturePrimary);
             <div class="transparent-background" id="@service.Slug">
                 <div class="horizontal-content image-first-mobile">
                     @if (i % 2 == 0)
@@ -31,12 +32,20 @@
                             <p class="center-text"> @service.Description</p>
                             <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
                         </div>
-                        <img src="@service.PicturePrimary" alt="@service.Title" />
+                        <img src="@service.PicturePrimary" 
+                             alt="@service.Title" 
+                             width="@(size.Width > 0 ? size.Width : (int?)null)" 
+                             height="@(size.Height > 0 ? size.Height : (int?)null)"
+                             loading="lazy"/>
                     }
                     else
                     {
 
-                        <img src="@service.PicturePrimary" alt="@service.Title" />
+                        <img src="@service.PicturePrimary"
+                             alt="@service.Title"
+                             width="@(size.Width > 0 ? size.Width : (int?)null)"
+                             height="@(size.Height > 0 ? size.Height : (int?)null)"
+                             loading="lazy" />
                         <div class="vertical-content">
                             <h3 class="center-text">@service.Title</h3>
                             <p class="center-text"> @service.Description</p>
@@ -51,6 +60,7 @@
         @for (int i = switchIndex; i < Model.Count; i++)
         {
             var service = Model[i];
+			var size = Images.GetSize(service.PicturePrimary);
             <div class="transparent-background" id="@service.Slug">
                 <div class="horizontal-content image-first-mobile">
                     @if (i % 2 == 0)
@@ -60,12 +70,20 @@
                             <p class="center-text"> @service.Description</p>
                             <a class="btn" asp-controller="Contact" asp-action="Index" asp-fragment="@contactFormID" asp-route-subject="@("Services: " + service.Title)">Contact us</a>
                         </div>
-                        <img src="@service.PicturePrimary" alt="@service.Title" />
+                        <img src="@service.PicturePrimary"
+                             alt="@service.Title"
+                             width="@(size.Width > 0 ? size.Width : (int?)null)"
+                             height="@(size.Height > 0 ? size.Height : (int?)null)"
+                             loading="lazy" />
                     }
                     else
                     {
 
-                        <img src="@service.PicturePrimary" alt="@service.Title" />
+                        <img src="@service.PicturePrimary"
+                             alt="@service.Title"
+                             width="@(size.Width > 0 ? size.Width : (int?)null)"
+                             height="@(size.Height > 0 ? size.Height : (int?)null)"
+                             loading="lazy" />
                         <div class="vertical-content">
                             <h3 class="center-text">@service.Title</h3>
                             <p class="center-text"> @service.Description</p>
